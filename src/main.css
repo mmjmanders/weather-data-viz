@@ -4,3 +4,57 @@
   --font-sans: 'Roboto Condensed Variable', sans-serif;
   --font-mono: 'Inconsolata Variable', monospace;
 }
+
+@theme {
+  /* Midnight - Deep background blues */
+  --color-midnight-50: oklch(0.92 0.01 255);
+  --color-midnight-100: oklch(0.85 0.02 255);
+  --color-midnight-200: oklch(0.72 0.03 255);
+  --color-midnight-300: oklch(0.58 0.05 255);
+  --color-midnight-400: oklch(0.45 0.06 255);
+  --color-midnight-500: oklch(0.35 0.07 255);
+  --color-midnight-600: oklch(0.28 0.06 255);
+  --color-midnight-700: oklch(0.22 0.05 255);
+  --color-midnight-800: oklch(0.18 0.04 255);
+  --color-midnight-900: oklch(0.15 0.03 255);
+  --color-midnight-950: oklch(0.12 0.03 255);
+
+  /* Cyan - The glowing graph and rain */
+  --color-cyan-50: oklch(0.97 0.02 210);
+  --color-cyan-100: oklch(0.92 0.04 210);
+  --color-cyan-200: oklch(0.86 0.08 210);
+  --color-cyan-300: oklch(0.78 0.12 210);
+  --color-cyan-400: oklch(0.72 0.15 210);
+  --color-cyan-500: oklch(0.65 0.18 210);
+  --color-cyan-600: oklch(0.55 0.16 210);
+  --color-cyan-700: oklch(0.45 0.14 210);
+  --color-cyan-800: oklch(0.35 0.11 210);
+  --color-cyan-900: oklch(0.28 0.08 210);
+  --color-cyan-950: oklch(0.18 0.06 210);
+
+  /* Sunlight - The sun icon yellow/amber */
+  --color-sunlight-50: oklch(0.98 0.02 85);
+  --color-sunlight-100: oklch(0.95 0.05 85);
+  --color-sunlight-200: oklch(0.9 0.1 85);
+  --color-sunlight-300: oklch(0.84 0.15 85);
+  --color-sunlight-400: oklch(0.78 0.18 85);
+  --color-sunlight-500: oklch(0.72 0.2 85);
+  --color-sunlight-600: oklch(0.62 0.17 85);
+  --color-sunlight-700: oklch(0.52 0.14 85);
+  --color-sunlight-800: oklch(0.42 0.12 85);
+  --color-sunlight-900: oklch(0.32 0.09 85);
+  --color-sunlight-950: oklch(0.22 0.07 85);
+
+  /* Coral - The thermometer red/pink */
+  --color-coral-50: oklch(0.96 0.02 20);
+  --color-coral-100: oklch(0.92 0.05 20);
+  --color-coral-200: oklch(0.85 0.1 20);
+  --color-coral-300: oklch(0.75 0.15 20);
+  --color-coral-400: oklch(0.65 0.2 20);
+  --color-coral-500: oklch(0.6 0.22 20);
+  --color-coral-600: oklch(0.52 0.19 20);
+  --color-coral-700: oklch(0.44 0.16 20);
+  --color-coral-800: oklch(0.36 0.13 20);
+  --color-coral-900: oklch(0.28 0.1 20);
+  --color-coral-950: oklch(0.2 0.08 20);
+}
