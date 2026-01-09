@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import '@fontsource-variable/roboto-condensed'
+import './main.css'
 
 createApp(App)
   .use(VueQueryPlugin, {
