@@ -28,4 +28,10 @@ export default defineConfigWithVueTs(
   },
 
   skipFormatting,
+
+  {
+    rules: {
+      'no-console': 'warn',
+    },
+  },
 )

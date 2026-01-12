@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
+import InputForm from '@/components/InputForm.vue'
+
+const logValues = (startDate: string, endDate: string, location: string) => {
+  console.log('Received data:', startDate, endDate, location)
+}
 </script>
 
 <template>
@@ -9,6 +14,9 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
       <h1 class="text-4xl font-bold text-slate-950 dark:text-slate-50">Weather Data Viz</h1>
     </nav>
   </header>
+  <main class="w-full md:w-4xl mx-auto px-4">
+    <InputForm @submit:data="logValues" />
+  </main>
   <VueQueryDevtools />
 </template>
 

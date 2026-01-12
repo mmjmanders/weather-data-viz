@@ -8,7 +8,7 @@ const emit = defineEmits<{
   'submit:data': [startDate: string, endDate: string, location: string]
 }>()
 
-const { defineField, handleSubmit } = useForm<InputFormType>({
+const { defineField, handleSubmit, meta } = useForm<InputFormType>({
   validationSchema: toTypedSchema(InputFormSchema),
   validateOnMount: false,
   initialValues: {
@@ -30,31 +30,38 @@ const onSubmit = handleSubmit(({ startDate, endDate, location }) => {
 
 <template>
   <form @submit="onSubmit">
-    <div class="input-group">
-      <label for="startDate">Start date</label>
-      <input
-        id="startDate"
-        name="startDate"
-        type="date"
-        :max="maxDate"
-        v-model="startDateField"
-        v-bind="startDateFieldAttrs"
-      />
+    <div class="flex flex-col md:flex-row gap-4">
+      <div class="md:flex-1/3 flex flex-col">
+        <label for="startDate">Start date</label>
+        <input
+          id="startDate"
+          name="startDate"
+          type="date"
+          :max="maxDate"
+          v-model="startDateField"
+          v-bind="startDateFieldAttrs"
+        />
+      </div>
+      <div class="md:flex-1/3 flex flex-col">
+        <label for="endDate">End date</label>
+        <input
+          id="endDate"
+          name="endDate"
+          type="date"
+          :max="maxDate"
+          v-model="endDateField"
+          v-bind="endDateFieldAttrs"
+        />
+      </div>
+      <div class="md:flex-1/3 flex flex-col">
+        <label for="location">Location</label>
+        <input id="location" name="location" v-model="locationField" v-bind="locationFieldAttrs" />
+      </div>
     </div>
-    <div class="input-group">
-      <label for="endDate">End date</label>
-      <input
-        id="endDate"
-        name="endDate"
-        type="date"
-        :max="maxDate"
-        v-model="endDateField"
-        v-bind="endDateFieldAttrs"
-      />
-    </div>
-    <div class="input-group">
-      <label for="location">Location</label>
-      <input id="location" name="location" v-model="locationField" v-bind="locationFieldAttrs" />
+    <div>
+      <button type="submit" :disabled="!meta.valid" class="disabled:cursor-not-allowed">
+        Submit
+      </button>
     </div>
   </form>
 </template>
