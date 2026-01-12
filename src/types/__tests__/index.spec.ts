@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { checkEndDateAfterStartDate } from '@/types'
+import { checkEndDateAfterStartDate, InputFormSchema } from '@/types'
 
 describe('checkEndDateAfterStartDate', () => {
   it.each([
@@ -58,4 +58,49 @@ describe('checkEndDateAfterStartDate', () => {
       expect(checkEndDateAfterStartDate(startDate, endDate)).toBe(expected)
     },
   )
+})
+
+describe('InputFormSchema', () => {
+  it('should validate a valid input', async () => {
+    const validInput = {
+      startDate: '2023-01-01',
+      endDate: '2023-01-02',
+      location: 'London',
+    }
+    await expect(InputFormSchema.validate(validInput)).resolves.toEqual(validInput)
+  })
+
+  it('should fail if required fields are missing', async () => {
+    const invalidInput = {}
+    await expect(InputFormSchema.validate(invalidInput)).rejects.toThrow()
+  })
+
+  it('should fail if location is empty or only whitespace', async () => {
+    const invalidInput = {
+      startDate: '2023-01-01',
+      endDate: '2023-01-02',
+      location: '  ',
+    }
+    await expect(InputFormSchema.validate(invalidInput)).rejects.toThrow()
+  })
+
+  it('should fail if endDate is before startDate', async () => {
+    const invalidInput = {
+      startDate: '2023-01-02',
+      endDate: '2023-01-01',
+      location: 'London',
+    }
+    await expect(InputFormSchema.validate(invalidInput)).rejects.toThrow(
+      'End date must be after start date',
+    )
+  })
+
+  it('should fail if dates are invalid', async () => {
+    const invalidInput = {
+      startDate: 'invalid',
+      endDate: '2023-01-01',
+      location: 'London',
+    }
+    await expect(InputFormSchema.validate(invalidInput)).rejects.toThrow()
+  })
 })
