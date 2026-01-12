@@ -57,4 +57,82 @@
   --color-coral-800: oklch(0.36 0.13 20);
   --color-coral-900: oklch(0.28 0.1 20);
   --color-coral-950: oklch(0.2 0.08 20);
+
+  /* Emerald - Vegetation & Air Quality (Hue 150) */
+  --color-emerald-50: oklch(0.97 0.02 150);
+  --color-emerald-100: oklch(0.92 0.05 150);
+  --color-emerald-200: oklch(0.86 0.1 150);
+  --color-emerald-300: oklch(0.78 0.14 150);
+  --color-emerald-400: oklch(0.7 0.17 150);
+  --color-emerald-500: oklch(0.62 0.19 150);
+  --color-emerald-600: oklch(0.52 0.16 150);
+  --color-emerald-700: oklch(0.42 0.13 150);
+  --color-emerald-800: oklch(0.32 0.1 150);
+  --color-emerald-900: oklch(0.25 0.07 150);
+  --color-emerald-950: oklch(0.18 0.05 150);
+
+  /* Violet - UV Index & Extreme Alerts (Hue 300) */
+  --color-violet-50: oklch(0.96 0.02 300);
+  --color-violet-100: oklch(0.91 0.04 300);
+  --color-violet-200: oklch(0.83 0.08 300);
+  --color-violet-300: oklch(0.72 0.13 300);
+  --color-violet-400: oklch(0.62 0.17 300);
+  --color-violet-500: oklch(0.55 0.19 300);
+  --color-violet-600: oklch(0.48 0.16 300);
+  --color-violet-700: oklch(0.4 0.14 300);
+  --color-violet-800: oklch(0.32 0.11 300);
+  --color-violet-900: oklch(0.25 0.08 300);
+  --color-violet-950: oklch(0.18 0.06 300);
+
+  /* Amber - Warnings & Heat (Hue 55) */
+  --color-amber-50: oklch(0.97 0.02 55);
+  --color-amber-100: oklch(0.93 0.05 55);
+  --color-amber-200: oklch(0.88 0.1 55);
+  --color-amber-300: oklch(0.8 0.15 55);
+  --color-amber-400: oklch(0.72 0.18 55);
+  --color-amber-500: oklch(0.65 0.2 55);
+  --color-amber-600: oklch(0.55 0.17 55);
+  --color-amber-700: oklch(0.45 0.14 55);
+  --color-amber-800: oklch(0.35 0.11 55);
+  --color-amber-900: oklch(0.28 0.08 55);
+  --color-amber-950: oklch(0.18 0.06 55);
+
+  /* Indigo - Storms & Deep Water (Hue 280) */
+  --color-indigo-50: oklch(0.95 0.02 280);
+  --color-indigo-100: oklch(0.9 0.04 280);
+  --color-indigo-200: oklch(0.8 0.08 280);
+  --color-indigo-300: oklch(0.68 0.13 280);
+  --color-indigo-400: oklch(0.55 0.17 280);
+  --color-indigo-500: oklch(0.45 0.19 280);
+  --color-indigo-600: oklch(0.38 0.16 280);
+  --color-indigo-700: oklch(0.31 0.13 280);
+  --color-indigo-800: oklch(0.25 0.1 280);
+  --color-indigo-900: oklch(0.2 0.08 280);
+  --color-indigo-950: oklch(0.15 0.06 280);
+
+  /* Rose - Temperature Peaks (Hue 0) */
+  --color-rose-50: oklch(0.96 0.02 0);
+  --color-rose-100: oklch(0.91 0.05 0);
+  --color-rose-200: oklch(0.84 0.1 0);
+  --color-rose-300: oklch(0.74 0.15 0);
+  --color-rose-400: oklch(0.64 0.2 0);
+  --color-rose-500: oklch(0.58 0.22 0);
+  --color-rose-600: oklch(0.5 0.19 0);
+  --color-rose-700: oklch(0.42 0.16 0);
+  --color-rose-800: oklch(0.34 0.13 0);
+  --color-rose-900: oklch(0.26 0.1 0);
+  --color-rose-950: oklch(0.18 0.08 0);
+
+  /* Slate - Neutral Accents (Hue 255, Low Chroma) */
+  --color-slate-50: oklch(0.98 0.005 255);
+  --color-slate-100: oklch(0.94 0.01 255);
+  --color-slate-200: oklch(0.88 0.015 255);
+  --color-slate-300: oklch(0.8 0.02 255);
+  --color-slate-400: oklch(0.7 0.025 255);
+  --color-slate-500: oklch(0.6 0.03 255);
+  --color-slate-600: oklch(0.5 0.025 255);
+  --color-slate-700: oklch(0.4 0.02 255);
+  --color-slate-800: oklch(0.3 0.015 255);
+  --color-slate-900: oklch(0.2 0.01 255);
+  --color-slate-950: oklch(0.12 0.01 255);
 }
