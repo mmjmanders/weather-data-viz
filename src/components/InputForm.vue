@@ -29,9 +29,9 @@ const onSubmit = handleSubmit(({ startDate, endDate, location }) => {
 </script>
 
 <template>
-  <form @submit="onSubmit">
+  <form @submit="onSubmit" class="flex flex-col gap-4">
     <div class="flex flex-col md:flex-row gap-4">
-      <div class="md:flex-1/3 flex flex-col">
+      <div class="flex-1 flex flex-col gap-1">
         <label for="startDate">Start date</label>
         <input
           id="startDate"
@@ -42,7 +42,7 @@ const onSubmit = handleSubmit(({ startDate, endDate, location }) => {
           v-bind="startDateFieldAttrs"
         />
       </div>
-      <div class="md:flex-1/3 flex flex-col">
+      <div class="flex-1 flex flex-col gap-1">
         <label for="endDate">End date</label>
         <input
           id="endDate"
@@ -53,7 +53,7 @@ const onSubmit = handleSubmit(({ startDate, endDate, location }) => {
           v-bind="endDateFieldAttrs"
         />
       </div>
-      <div class="md:flex-1/3 flex flex-col">
+      <div class="flex-1 flex flex-col gap-1">
         <label for="location">Location</label>
         <input id="location" name="location" v-model="locationField" v-bind="locationFieldAttrs" />
       </div>
