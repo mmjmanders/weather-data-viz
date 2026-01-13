@@ -3,6 +3,8 @@ import { checkEndDateAfterStartDate, DEFAULT_DATE_FORMAT } from '@/utils'
 import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
+import { ref } from 'vue'
+import { offset, useFloating } from '@floating-ui/vue'
 
 const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 const { Field, useStore, Subscribe, handleSubmit } = useForm({
@@ -38,6 +40,20 @@ const emit = defineEmits<{
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 
 const errorMap = useStore((state) => state.errorMap.onChange)
+
+const endDateInputRef = ref(null)
+const endDateFloating = ref(null)
+const { floatingStyles: endDateFloatingStyles } = useFloating(endDateInputRef, endDateFloating, {
+  placement: 'bottom-start',
+  middleware: [offset(5)],
+})
+
+const locationInputRef = ref(null)
+const locationFloating = ref(null)
+const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef, locationFloating, {
+  placement: 'bottom-start',
+  middleware: [offset(5)],
+})
 </script>
 
 <template>
@@ -67,11 +83,20 @@ const errorMap = useStore((state) => state.errorMap.onChange)
               :id="field.name"
               :name="field.name"
               :value="field.state.value"
+              ref="endDateInputRef"
               type="date"
               :max="maxDate"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
               @blur="field.handleBlur"
             />
+            <div
+              ref="endDateFloating"
+              v-if="errorMap?.endDate"
+              class="text-red-500 text-xs"
+              :style="endDateFloatingStyles"
+            >
+              {{ errorMap.endDate }}
+            </div>
           </template>
         </Field>
       </div>
@@ -82,10 +107,19 @@ const errorMap = useStore((state) => state.errorMap.onChange)
             <input
               :id="field.name"
               :name="field.name"
+              ref="locationInputRef"
               :value="field.state.value"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
               @blur="field.handleBlur"
             />
+            <div
+              ref="locationFloating"
+              v-if="errorMap?.location"
+              class="text-red-500 text-xs"
+              :style="locationFloatingStyles"
+            >
+              {{ errorMap.location }}
+            </div>
           </template>
         </Field>
       </div>
