@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { DEFAULT_DATE_FORMAT } from '@/utils'
+import { checkEndDateAfterStartDate, DEFAULT_DATE_FORMAT } from '@/utils'
 import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 
 const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
-const form = useForm({
+const { Field, useStore, Subscribe, handleSubmit } = useForm({
   defaultValues: {
     startDate: today,
     endDate: today,
@@ -13,18 +13,21 @@ const form = useForm({
   } as InputFormType,
   validators: {
     onChange: ({ value }) => {
+      const errors: Record<string, string> = {}
       const result = InputFormSchema.safeParse(value)
       if (!result.success) {
-        return result.error.issues.map((issue) => ({
-          field: issue.path[0],
-          message: issue.message,
-        }))
+        result.error.issues.forEach((issue) => {
+          errors[String(issue.path[0])] = issue.message
+        })
       }
-      return undefined
+      if (!checkEndDateAfterStartDate(value.startDate, value.endDate)) {
+        errors.endDate = 'End date cannot be before start date'
+      }
+      return Object.keys(errors).length ? errors : undefined
     },
   },
   onSubmit: ({ value }) => {
-    console.log(value)
+    emit('submit:data', value.startDate, value.endDate, value.location)
   },
 })
 
@@ -34,16 +37,16 @@ const emit = defineEmits<{
 
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 
-const errorMap = form.useStore((state) => state.errorMap.onChange)
+const errorMap = useStore((state) => state.errorMap.onChange)
 </script>
 
 <template>
-  <form @submit.prevent="form.handleSubmit" class="flex flex-col gap-4">
+  <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
     <div class="flex flex-col md:flex-row gap-4">
       <div class="flex-1 flex flex-col gap-1">
-        <form.Field name="startDate">
+        <Field name="startDate">
           <template v-slot="{ field }">
-            <label :for="field.name">Start date</label>
+            <label :for="field.name">Start date </label>
             <input
               :id="field.name"
               :name="field.name"
@@ -54,10 +57,10 @@ const errorMap = form.useStore((state) => state.errorMap.onChange)
               @blur="field.handleBlur"
             />
           </template>
-        </form.Field>
+        </Field>
       </div>
       <div class="flex-1 flex flex-col gap-1">
-        <form.Field name="endDate">
+        <Field name="endDate">
           <template v-slot="{ field }">
             <label :for="field.name">End date</label>
             <input
@@ -70,10 +73,10 @@ const errorMap = form.useStore((state) => state.errorMap.onChange)
               @blur="field.handleBlur"
             />
           </template>
-        </form.Field>
+        </Field>
       </div>
       <div class="flex-1 flex flex-col gap-1">
-        <form.Field name="location">
+        <Field name="location">
           <template v-slot="{ field }">
             <label :for="field.name">Location</label>
             <input
@@ -84,11 +87,11 @@ const errorMap = form.useStore((state) => state.errorMap.onChange)
               @blur="field.handleBlur"
             />
           </template>
-        </form.Field>
+        </Field>
       </div>
     </div>
     <div>
-      <form.Subscribe>
+      <Subscribe>
         <template v-slot="{ canSubmit, isPristine }">
           <button
             type="submit"
@@ -98,7 +101,7 @@ const errorMap = form.useStore((state) => state.errorMap.onChange)
             Submit
           </button>
         </template>
-      </form.Subscribe>
+      </Subscribe>
     </div>
   </form>
 </template>
