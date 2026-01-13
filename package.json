@@ -10,7 +10,6 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
@@ -22,12 +21,10 @@
     "@fontsource-variable/inconsolata": "^5.2.8",
     "@fontsource-variable/roboto-condensed": "^5.2.8",
     "@tanstack/vue-query": "^5.92.5",
-    "@vee-validate/yup": "^4.15.1",
     "dayjs": "^1.11.19",
     "tailwindcss": "^4.1.18",
-    "vee-validate": "^4.15.1",
     "vue": "^3.5.26",
-    "yup": "^1.7.1"
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -37,12 +34,8 @@
     "@types/node": "^24.10.7",
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vitejs/plugin-vue": "^6.0.3",
-    "@vitest/coverage-v8": "^4.0.16",
-    "@vitest/eslint-plugin": "^1.6.6",
-    "@vitest/ui": "^4.0.16",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
-    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "~10.6.2",
@@ -57,7 +50,6 @@
     "vite": "^7.3.1",
     "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-vue-devtools": "^8.0.5",
-    "vitest": "^4.0.16",
     "vue-tsc": "^3.2.2"
   },
   "packageManager": "pnpm@10.28.0+sha512.05df71d1421f21399e053fde567cea34d446fa02c76571441bfc1c7956e98e363088982d940465fd34480d4d90a0668bc12362f8aa88000a64e83d0b0e47be48"

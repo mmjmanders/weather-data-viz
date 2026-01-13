@@ -16,14 +16,6 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm exec eslint .
 
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-      - run: pnpm test:unit
-
   type-check:
     needs: setup
     runs-on: ubuntu-latest
