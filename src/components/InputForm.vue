@@ -2,32 +2,103 @@
 import { DEFAULT_DATE_FORMAT } from '@/utils'
 import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
+import { useForm } from '@tanstack/vue-form'
+
+const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
+const form = useForm({
+  defaultValues: {
+    startDate: today,
+    endDate: today,
+    location: '',
+  } as InputFormType,
+  validators: {
+    onChange: ({ value }) => {
+      const result = InputFormSchema.safeParse(value)
+      if (!result.success) {
+        return result.error.issues.map((issue) => ({
+          field: issue.path[0],
+          message: issue.message,
+        }))
+      }
+      return undefined
+    },
+  },
+  onSubmit: ({ value }) => {
+    console.log(value)
+  },
+})
 
 const emit = defineEmits<{
   'submit:data': [startDate: string, endDate: string, location: string]
 }>()
 
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
+
+const errorMap = form.useStore((state) => state.errorMap.onChange)
 </script>
 
 <template>
-  <form class="flex flex-col gap-4">
+  <form @submit.prevent="form.handleSubmit" class="flex flex-col gap-4">
     <div class="flex flex-col md:flex-row gap-4">
       <div class="flex-1 flex flex-col gap-1">
-        <label for="startDate">Start date</label>
-        <input id="startDate" name="startDate" type="date" :max="maxDate" />
+        <form.Field name="startDate">
+          <template v-slot="{ field }">
+            <label :for="field.name">Start date</label>
+            <input
+              :id="field.name"
+              :name="field.name"
+              :value="field.state.value"
+              type="date"
+              :max="maxDate"
+              @input="field.handleChange(($event.target as HTMLInputElement).value)"
+              @blur="field.handleBlur"
+            />
+          </template>
+        </form.Field>
       </div>
       <div class="flex-1 flex flex-col gap-1">
-        <label for="endDate">End date</label>
-        <input id="endDate" name="endDate" type="date" :max="maxDate" />
+        <form.Field name="endDate">
+          <template v-slot="{ field }">
+            <label :for="field.name">End date</label>
+            <input
+              :id="field.name"
+              :name="field.name"
+              :value="field.state.value"
+              type="date"
+              :max="maxDate"
+              @input="field.handleChange(($event.target as HTMLInputElement).value)"
+              @blur="field.handleBlur"
+            />
+          </template>
+        </form.Field>
       </div>
       <div class="flex-1 flex flex-col gap-1">
-        <label for="location">Location</label>
-        <input id="location" name="location" />
+        <form.Field name="location">
+          <template v-slot="{ field }">
+            <label :for="field.name">Location</label>
+            <input
+              :id="field.name"
+              :name="field.name"
+              :value="field.state.value"
+              @input="field.handleChange(($event.target as HTMLInputElement).value)"
+              @blur="field.handleBlur"
+            />
+          </template>
+        </form.Field>
       </div>
     </div>
     <div>
-      <button type="submit" :disabled="true" class="disabled:cursor-not-allowed">Submit</button>
+      <form.Subscribe>
+        <template v-slot="{ canSubmit, isPristine }">
+          <button
+            type="submit"
+            :disabled="isPristine || !canSubmit"
+            class="disabled:cursor-not-allowed"
+          >
+            Submit
+          </button>
+        </template>
+      </form.Subscribe>
     </div>
   </form>
 </template>
