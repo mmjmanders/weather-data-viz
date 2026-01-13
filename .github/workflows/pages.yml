@@ -8,26 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-      - run: pnpm i
+      - uses: ./.github/actions/setup
 
   build:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-      - run: pnpm i --frozen-lockfile
+      - uses: ./.github/actions/setup
       - run: pnpm build-only --base /${{ github.event.repository.name }}/
       - uses: actions/upload-pages-artifact@v4
         with:
