@@ -44,14 +44,14 @@ const errorMap = useStore((state) => state.errorMap.onChange)
 const endDateInputRef = ref(null)
 const endDateFloating = ref(null)
 const { floatingStyles: endDateFloatingStyles } = useFloating(endDateInputRef, endDateFloating, {
-  placement: 'bottom-start',
+  placement: 'bottom-end',
   middleware: [offset(5)],
 })
 
 const locationInputRef = ref(null)
 const locationFloating = ref(null)
 const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef, locationFloating, {
-  placement: 'bottom-start',
+  placement: 'bottom-end',
   middleware: [offset(5)],
 })
 </script>

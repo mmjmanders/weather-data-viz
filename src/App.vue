@@ -13,7 +13,7 @@ const { VITE_BUILD_SHA: version } = import.meta.env
   <header>
     <nav>
       <img src="/logo.svg" alt="logo" class="w-12 h-12" />
-      <h1>Weather Data Viz</h1>
+      <h1 class="title">Weather Data Viz</h1>
       <span class="version">{{ version || 'dev' }}</span>
     </nav>
   </header>
