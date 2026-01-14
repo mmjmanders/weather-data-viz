@@ -5,16 +5,19 @@ import InputForm from '@/components/InputForm.vue'
 const logValues = (startDate: string, endDate: string, location: string) => {
   console.log('Received data:', startDate, endDate, location)
 }
+
+const { VITE_BUILD_SHA: version } = import.meta.env
 </script>
 
 <template>
-  <header class="w-full flex justify-center bg-slate-300 dark:bg-slate-700">
-    <nav class="w-full h-full md:w-3xl lg:w-5xl mx-auto flex gap-2 items-center px-4">
+  <header>
+    <nav>
       <img src="/logo.svg" alt="logo" class="w-12 h-12" />
-      <h1 class="text-4xl font-bold text-slate-950 dark:text-slate-50">Weather Data Viz</h1>
+      <h1>Weather Data Viz</h1>
+      <span class="version">{{ version || 'dev' }}</span>
     </nav>
   </header>
-  <main class="w-full md:w-3xl lg:w-5xl mx-auto px-4">
+  <main>
     <InputForm @submit:data="logValues" />
   </main>
   <VueQueryDevtools />

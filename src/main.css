@@ -1,11 +1,77 @@
 @import 'tailwindcss';
 
 :root {
-  --font-sans: 'Roboto Condensed Variable', sans-serif;
-  --font-mono: 'Inconsolata Variable', monospace;
+  --font-sans: 'Inter Variable', sans-serif;
+  --font-mono: 'Geist Mono Variable', monospace;
+}
+
+@layer base {
+  body {
+    @apply text-slate-950 bg-slate-50;
+    @apply dark:text-slate-50 dark:bg-slate-950;
+  }
+
+  header {
+    @apply w-full flex justify-center bg-slate-300 dark:bg-slate-700;
+  }
+
+  nav,
+  main {
+    @apply w-full md:w-3xl lg:w-5xl mx-auto px-4;
+  }
+
+  nav {
+    @apply h-full flex gap-2 items-center;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-headings;
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-2 py-1 rounded-md cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply bg-cyan-300;
+  }
+
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .input-error {
+    @apply text-coral-400 text-xs;
+  }
+
+  .input {
+    @apply bg-slate-50 px-2 py-1 rounded-md border focus:outline-none border-slate-500;
+  }
+
+  .input.has-error {
+    @apply border-coral-400;
+  }
+
+  nav .version {
+    @apply font-mono ml-auto text-xs;
+  }
 }
 
 @theme {
+  --font-headings: 'Manrope Variable', sans-serif;
+
   /* Midnight - Deep background blues */
   --color-midnight-50: oklch(0.92 0.01 255);
   --color-midnight-100: oklch(0.85 0.02 255);
