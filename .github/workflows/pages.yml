@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - run: pnpm build-only --base /${{ github.event.repository.name }}/
+      - run: VITE_BUILD_SHA=$(git rev-parse --short HEAD) pnpm build-only --base /${{ github.event.repository.name }}/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist/

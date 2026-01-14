@@ -5,6 +5,8 @@ import InputForm from '@/components/InputForm.vue'
 const logValues = (startDate: string, endDate: string, location: string) => {
   console.log('Received data:', startDate, endDate, location)
 }
+
+const { VITE_BUILD_SHA: version } = import.meta.env
 </script>
 
 <template>
@@ -12,6 +14,7 @@ const logValues = (startDate: string, endDate: string, location: string) => {
     <nav>
       <img src="/logo.svg" alt="logo" class="w-12 h-12" />
       <h1>Weather Data Viz</h1>
+      <span class="version">{{ version || 'dev' }}</span>
     </nav>
   </header>
   <main>

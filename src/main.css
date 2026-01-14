@@ -63,6 +63,10 @@
   .input.has-error {
     @apply border-coral-400;
   }
+
+  nav .version {
+    @apply font-mono ml-auto text-xs;
+  }
 }
 
 @theme {
