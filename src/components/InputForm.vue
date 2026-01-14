@@ -79,7 +79,7 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
       <div class="flex-1 flex flex-col gap-1">
         <Field name="endDate">
           <template v-slot="{ field }">
-            <label :for="field.name">End date</label>
+            <label :for="field.name" class="text-slate-950 dark:text-slate-50">End date</label>
             <input
               :id="field.name"
               :name="field.name"
@@ -89,7 +89,11 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
               :max="maxDate"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
               @blur="field.handleBlur"
-              class="bg-slate-50 px-2 py-1 rounded-md border border-slate-500 focus:outline-none"
+              class="bg-slate-50 px-2 py-1 rounded-md border focus:outline-none"
+              :class="{
+                'border-slate-500': !errorMap?.endDate,
+                'border-coral-400': errorMap?.endDate,
+              }"
             />
             <div
               ref="endDateFloating"
@@ -105,7 +109,7 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
       <div class="flex-1 flex flex-col gap-1">
         <Field name="location">
           <template v-slot="{ field }">
-            <label :for="field.name">Location</label>
+            <label :for="field.name" class="text-slate-950 dark:text-slate-50">Location</label>
             <input
               :id="field.name"
               :name="field.name"
@@ -113,7 +117,11 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
               :value="field.state.value"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
               @blur="field.handleBlur"
-              class="bg-slate-50 px-2 py-1 rounded-md border border-slate-500 focus:outline-none"
+              class="bg-slate-50 px-2 py-1 rounded-md border focus:outline-none"
+              :class="{
+                'border-slate-500': !errorMap?.location,
+                'border-coral-400': errorMap?.location,
+              }"
             />
             <div
               ref="locationFloating"
@@ -133,7 +141,7 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
           <button
             type="submit"
             :disabled="isPristine || !canSubmit"
-            class="disabled:cursor-not-allowed rounded-md bg-cyan-300 px-2 py-1 disabled:opacity-50 cursor-pointer"
+            class="disabled:cursor-not-allowed rounded-md bg-cyan-300 px-2 py-1 disabled:opacity-50 cursor-pointer text-slate-950"
           >
             Submit
           </button>
