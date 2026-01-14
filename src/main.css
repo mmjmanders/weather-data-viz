@@ -57,7 +57,7 @@
   }
 
   .input {
-    @apply bg-slate-50 px-2 py-1 rounded-md border focus:outline-none border-slate-500;
+    @apply bg-slate-50 text-slate-950 px-2 py-1 rounded-md border focus:outline-none border-slate-500;
   }
 
   .input.has-error {
@@ -66,6 +66,10 @@
 
   nav .version {
     @apply font-mono ml-auto text-xs;
+  }
+
+  h1.title {
+    @apply text-2xl sm:text-3xl;
   }
 }
 
