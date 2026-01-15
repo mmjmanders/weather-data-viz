@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { endDateBeforeStartDate, dateRangeIsAllowed } from '@/utils'
 
 export const InputFormSchema = z
   .object({
@@ -6,6 +7,64 @@ export const InputFormSchema = z
     endDate: z.iso.date(),
     location: z.string().trim().min(1, { error: 'Location must not be empty' }),
   })
+  .superRefine(({ startDate, endDate }, ctx) => {
+    if (endDateBeforeStartDate(startDate, endDate)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['endDate'],
+        message: 'End date cannot be before start date',
+      })
+    } else if (!dateRangeIsAllowed(startDate, endDate)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['endDate'],
+        message: 'Date range must be at most one year',
+      })
+    }
+  })
   .strip()
 
 export type InputForm = z.infer<typeof InputFormSchema>
+
+export const ReverseGeolocationSchema = z
+  .object({
+    place_id: z.nullish(z.string()),
+    display_name: z.string(),
+  })
+  .strip()
+
+export type ReverseGeolocation = z.infer<typeof ReverseGeolocationSchema>
+
+export const GeolocationSchema = z
+  .object({
+    lat: z.coerce.number(),
+    lon: z.coerce.number(),
+  })
+  .strip()
+
+export type Geolocation = z.infer<typeof GeolocationSchema>
+
+export const HistoricalWeatherDailyUnitsSchema = z.object({
+  time: z.string(),
+  temperature_2m_mean: z.string(),
+  sunshine_duration: z.string(),
+  precipitation_sum: z.string(),
+})
+
+export const HistoricalWeatherDailySchema = z.object({
+  time: z.array(z.nullish(z.string())),
+  temperature_2m_mean: z.array(z.nullish(z.number())),
+  sunshine_duration: z.array(z.nullish(z.number())),
+  precipitation_sum: z.array(z.nullish(z.number())),
+})
+
+export const HistoricalWeatherSchema = z
+  .object({
+    daily_units: HistoricalWeatherDailyUnitsSchema,
+    daily: HistoricalWeatherDailySchema,
+  })
+  .strip()
+
+export type HistoricalWeatherDailyUnits = z.infer<typeof HistoricalWeatherDailyUnitsSchema>
+export type HistoricalWeatherDaily = z.infer<typeof HistoricalWeatherDailySchema>
+export type HistoricalWeather = z.infer<typeof HistoricalWeatherSchema>
