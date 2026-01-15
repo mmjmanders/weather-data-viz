@@ -136,7 +136,12 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
     <div>
       <Subscribe>
         <template v-slot="{ canSubmit, isPristine }">
-          <button type="submit" :disabled="isPristine || !canSubmit" class="btn btn-primary">
+          <button
+            type="submit"
+            :aria-disabled="isPristine || !canSubmit"
+            :disabled="isPristine || !canSubmit"
+            class="btn btn-primary"
+          >
             Submit
           </button>
         </template>
