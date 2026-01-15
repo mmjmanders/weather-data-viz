@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: VITE_BUILD_SHA=$(git rev-parse --short HEAD) pnpm build-only --base /${{ github.event.repository.name }}/
+        env:
+          VITE_LOCATIONIQ_API_KEY: ${{ secrets.LOCATIONIQ_API_KEY }}
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist/
