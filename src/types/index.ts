@@ -9,3 +9,21 @@ export const InputFormSchema = z
   .strip()
 
 export type InputForm = z.infer<typeof InputFormSchema>
+
+export const ReverseGeolocationSchema = z
+  .object({
+    place_id: z.string(),
+    display_name: z.string(),
+  })
+  .strip()
+
+export type ReverseGeolocation = z.infer<typeof ReverseGeolocationSchema>
+
+export const GeolocationSchema = z
+  .object({
+    lat: z.coerce.number(),
+    lon: z.coerce.number(),
+  })
+  .strip()
+
+export type Geolocation = z.infer<typeof GeolocationSchema>

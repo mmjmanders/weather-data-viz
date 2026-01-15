@@ -11,6 +11,7 @@ createApp(App)
     queryClientConfig: {
       defaultOptions: {
         queries: {
+          retry: 1,
           staleTime: 60 * 60 * 1000,
         },
       },

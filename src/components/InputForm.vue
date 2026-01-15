@@ -3,33 +3,35 @@ import { checkEndDateAfterStartDate, DEFAULT_DATE_FORMAT } from '@/utils'
 import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { offset, useFloating, autoUpdate } from '@floating-ui/vue'
+import { useGeolocation, useReverseGeolocation } from '@/queries'
 
 const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
-const { Field, useStore, Subscribe, handleSubmit } = useForm({
+const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
   defaultValues: {
     startDate: today,
     endDate: today,
     location: '',
   } as InputFormType,
   validators: {
-    onChange: ({ value }) => {
+    onChange: ({ value: formData }) => {
       const errors: Record<string, string> = {}
-      const result = InputFormSchema.safeParse(value)
+      const result = InputFormSchema.safeParse(formData)
       if (!result.success) {
         result.error.issues.forEach((issue) => {
           errors[String(issue.path[0])] = issue.message
         })
       }
-      if (!checkEndDateAfterStartDate(value.startDate, value.endDate)) {
+      if (!checkEndDateAfterStartDate(formData.startDate, formData.endDate)) {
         errors.endDate = 'End date cannot be before start date'
       }
       return Object.keys(errors).length ? errors : undefined
     },
   },
-  onSubmit: ({ value }) => {
-    emit('submit:data', value.startDate, value.endDate, value.location)
+  onSubmit: ({ value: formData }) => {
+    location.value = formData.location
+    emit('submit:data', formData.startDate, formData.endDate, formData.location)
   },
 })
 
@@ -55,6 +57,44 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
   placement: 'bottom-end',
   middleware: [offset(5)],
   whileElementsMounted: autoUpdate,
+})
+
+const latitude = ref<number | undefined>(undefined)
+const longitude = ref<number | undefined>(undefined)
+const isUsingGeolocation = ref<boolean>(false)
+const { data: reverseGeolocationData } = useReverseGeolocation(latitude, longitude)
+
+const location = ref<string | undefined>(undefined)
+const placeId = ref<string | undefined>(undefined)
+const { data: geolocationData } = useGeolocation(location, placeId)
+
+watch(
+  () => reverseGeolocationData.value,
+  (data) => {
+    if (data?.display_name) {
+      setFieldValue('location', data.display_name)
+    }
+    if (data?.place_id) {
+      placeId.value = data.place_id
+    }
+  },
+  { immediate: true },
+)
+
+onMounted(() => {
+  if (navigator.geolocation) {
+    isUsingGeolocation.value = true
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        latitude.value = position.coords.latitude
+        longitude.value = position.coords.longitude
+        isUsingGeolocation.value = false
+      },
+      () => {
+        isUsingGeolocation.value = false
+      },
+    )
+  }
 })
 </script>
 
@@ -140,8 +180,8 @@ const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef,
         <template v-slot="{ canSubmit, isPristine }">
           <button
             type="submit"
-            :aria-disabled="isPristine || !canSubmit"
-            :disabled="isPristine || !canSubmit"
+            :aria-disabled="isUsingGeolocation || isPristine || !canSubmit"
+            :disabled="isUsingGeolocation || isPristine || !canSubmit"
             class="btn btn-primary"
           >
             Submit
