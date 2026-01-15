@@ -65,7 +65,7 @@
   }
 
   nav .version {
-    @apply font-mono ml-auto text-xs;
+    @apply font-mono ml-auto text-xs hover:underline hover:cursor-pointer;
   }
 
   h1.title {

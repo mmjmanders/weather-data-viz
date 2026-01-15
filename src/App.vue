@@ -6,7 +6,8 @@ const logValues = (startDate: string, endDate: string, location: string) => {
   console.log('Received data:', startDate, endDate, location)
 }
 
-const { VITE_BUILD_SHA: version } = import.meta.env
+const { VITE_BUILD_SHA } = import.meta.env
+const version = VITE_BUILD_SHA || 'dev'
 </script>
 
 <template>
@@ -14,7 +15,13 @@ const { VITE_BUILD_SHA: version } = import.meta.env
     <nav>
       <img src="/logo.svg" alt="logo" class="w-12 h-12" />
       <h1 class="title">Weather Data Viz</h1>
-      <span class="version">{{ version || 'dev' }}</span>
+      <a
+        class="version"
+        rel="noopener"
+        target="_blank"
+        :href="'https://github.com/mmjmanders/weather-data-viz/tree/' + version"
+        >{{ version }}</a
+      >
     </nav>
   </header>
   <main>
