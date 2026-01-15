@@ -4,7 +4,7 @@ import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { ref } from 'vue'
-import { offset, useFloating } from '@floating-ui/vue'
+import { offset, useFloating, autoUpdate } from '@floating-ui/vue'
 
 const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 const { Field, useStore, Subscribe, handleSubmit } = useForm({
@@ -46,6 +46,7 @@ const endDateFloating = ref(null)
 const { floatingStyles: endDateFloatingStyles } = useFloating(endDateInputRef, endDateFloating, {
   placement: 'bottom-end',
   middleware: [offset(5)],
+  whileElementsMounted: autoUpdate,
 })
 
 const locationInputRef = ref(null)
@@ -53,6 +54,7 @@ const locationFloating = ref(null)
 const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef, locationFloating, {
   placement: 'bottom-end',
   middleware: [offset(5)],
+  whileElementsMounted: autoUpdate,
 })
 </script>
 
