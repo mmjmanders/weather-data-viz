@@ -8,7 +8,13 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  ...(command === 'serve' ? { server: { host: true } } : {}),
+  ...(command === 'serve'
+    ? {
+        server: {
+          host: true,
+        },
+      }
+    : {}),
   plugins: [
     vue(),
     tailwindcss(),
