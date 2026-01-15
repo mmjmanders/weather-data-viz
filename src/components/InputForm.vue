@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
-import { type InputForm as InputFormType, InputFormSchema } from '@/types'
+import { type HistoricalWeather, type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { onMounted, ref, watch } from 'vue'
 import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 
+const weatherData = defineModel<HistoricalWeather>()
 const minDate = dayjs(MINIMUM_DATE).format(DEFAULT_DATE_FORMAT)
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
@@ -89,6 +90,15 @@ watch(
     if (data) {
       lat.value = data.lat
       lon.value = data.lon
+    }
+  },
+)
+
+watch(
+  () => historicalWeaterData.value,
+  (data) => {
+    if (data) {
+      weatherData.value = data
     }
   },
 )

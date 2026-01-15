@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 import InputForm from '@/components/InputForm.vue'
-
-const logValues = (startDate: string, endDate: string, location: string) => {
-  console.log('Received data:', startDate, endDate, location)
-}
+import type { HistoricalWeather } from '@/types'
+import { ref } from 'vue'
 
 const { VITE_BUILD_SHA } = import.meta.env
 const version = VITE_BUILD_SHA || 'dev'
+
+const weatherData = ref<HistoricalWeather | undefined>(undefined)
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const version = VITE_BUILD_SHA || 'dev'
     </nav>
   </header>
   <main>
-    <InputForm @submit:data="logValues" />
+    <InputForm v-model="weatherData" />
   </main>
   <VueQueryDevtools />
 </template>
