@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { checkEndDateAfterStartDate, DEFAULT_DATE_FORMAT } from '@/utils'
+import { DEFAULT_DATE_FORMAT } from '@/utils'
 import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { onMounted, ref, watch } from 'vue'
-import { offset, useFloating, autoUpdate } from '@floating-ui/vue'
+import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useReverseGeolocation } from '@/queries'
 
 const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
@@ -22,9 +22,6 @@ const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
         result.error.issues.forEach((issue) => {
           errors[String(issue.path[0])] = issue.message
         })
-      }
-      if (!checkEndDateAfterStartDate(formData.startDate, formData.endDate)) {
-        errors.endDate = 'End date cannot be before start date'
       }
       return Object.keys(errors).length ? errors : undefined
     },
