@@ -4,10 +4,13 @@ import { type Geolocation, GeolocationSchema } from '@/types'
 
 const { VITE_LOCATIONIQ_API_URL: apiUrl, VITE_LOCATIONIQ_API_KEY: apiKey } = import.meta.env
 
-export const useGeolocation = (location: Ref<string | undefined>, place: Ref<string | undefined>) =>
+export const useGeolocation = (
+  location: Ref<string | undefined>,
+  place: Ref<string | null | undefined>,
+) =>
   useQuery<Geolocation | undefined, Error>({
-    queryKey: ['geolocation', place, location],
-    enabled: computed(() => place.value != undefined && location.value != undefined),
+    queryKey: ['geolocation', location, place],
+    enabled: computed(() => location.value != undefined),
     queryFn: async () => {
       const response = await fetch(
         `${apiUrl}/search?format=json&key=${apiKey}&accept-language=native&q=${location.value}`,

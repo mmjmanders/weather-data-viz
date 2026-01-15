@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { DEFAULT_DATE_FORMAT } from '@/utils'
+import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
 import { type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { onMounted, ref, watch } from 'vue'
 import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
-import { useGeolocation, useReverseGeolocation } from '@/queries'
+import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 
-const today = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
+const minDate = dayjs(MINIMUM_DATE).format(DEFAULT_DATE_FORMAT)
+const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
   defaultValues: {
-    startDate: today,
-    endDate: today,
+    startDate: maxDate,
+    endDate: maxDate,
     location: '',
   } as InputFormType,
   validators: {
@@ -28,6 +29,8 @@ const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
   },
   onSubmit: ({ value: formData }) => {
     location.value = formData.location
+    startDate.value = formData.startDate
+    endDate.value = formData.endDate
     emit('submit:data', formData.startDate, formData.endDate, formData.location)
   },
 })
@@ -35,8 +38,6 @@ const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
 const emit = defineEmits<{
   'submit:data': [startDate: string, endDate: string, location: string]
 }>()
-
-const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 
 const errorMap = useStore((state) => state.errorMap.onChange)
 
@@ -62,20 +63,34 @@ const isUsingGeolocation = ref<boolean>(false)
 const { data: reverseGeolocationData } = useReverseGeolocation(latitude, longitude)
 
 const location = ref<string | undefined>(undefined)
-const placeId = ref<string | undefined>(undefined)
+const placeId = ref<string | null | undefined>(undefined)
 const { data: geolocationData } = useGeolocation(location, placeId)
+
+const startDate = ref<string | undefined>(undefined)
+const endDate = ref<string | undefined>(undefined)
+const lat = ref<number | undefined>(undefined)
+const lon = ref<number | undefined>(undefined)
+const { data: historicalWeaterData } = useHistoricalWeather(startDate, endDate, lat, lon)
 
 watch(
   () => reverseGeolocationData.value,
   (data) => {
-    if (data?.display_name) {
+    if (data) {
       setFieldValue('location', data.display_name)
-    }
-    if (data?.place_id) {
       placeId.value = data.place_id
     }
   },
   { immediate: true },
+)
+
+watch(
+  () => geolocationData.value,
+  (data) => {
+    if (data) {
+      lat.value = data.lat
+      lon.value = data.lon
+    }
+  },
 )
 
 onMounted(() => {
@@ -107,6 +122,7 @@ onMounted(() => {
               :name="field.name"
               :value="field.state.value"
               type="date"
+              :min="minDate"
               :max="maxDate"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
               @blur="field.handleBlur"
@@ -125,6 +141,7 @@ onMounted(() => {
               :value="field.state.value"
               ref="endDateInputRef"
               type="date"
+              :min="minDate"
               :max="maxDate"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
               @blur="field.handleBlur"

@@ -28,7 +28,7 @@ export type InputForm = z.infer<typeof InputFormSchema>
 
 export const ReverseGeolocationSchema = z
   .object({
-    place_id: z.string(),
+    place_id: z.nullish(z.string()),
     display_name: z.string(),
   })
   .strip()
@@ -43,3 +43,28 @@ export const GeolocationSchema = z
   .strip()
 
 export type Geolocation = z.infer<typeof GeolocationSchema>
+
+export const HistoricalWeatherDailyUnitsSchema = z.object({
+  time: z.string(),
+  temperature_2m_mean: z.string(),
+  sunshine_duration: z.string(),
+  precipitation_sum: z.string(),
+})
+
+export const HistoricalWeatherDailySchema = z.object({
+  time: z.array(z.nullish(z.string())),
+  temperature_2m_mean: z.array(z.nullish(z.number())),
+  sunshine_duration: z.array(z.nullish(z.number())),
+  precipitation_sum: z.array(z.nullish(z.number())),
+})
+
+export const HistoricalWeatherSchema = z
+  .object({
+    daily_units: HistoricalWeatherDailyUnitsSchema,
+    daily: HistoricalWeatherDailySchema,
+  })
+  .strip()
+
+export type HistoricalWeatherDailyUnits = z.infer<typeof HistoricalWeatherDailyUnitsSchema>
+export type HistoricalWeatherDaily = z.infer<typeof HistoricalWeatherDailySchema>
+export type HistoricalWeather = z.infer<typeof HistoricalWeatherSchema>
