@@ -28,17 +28,13 @@ use([
 ])
 
 const options = computed(() => {
-  const temperatureColor = getComputedStyle(document.documentElement).getPropertyValue(
-    '--color-temperature',
-  )
-  const precipitationColor = getComputedStyle(document.documentElement).getPropertyValue(
-    '--color-precipitation',
-  )
-  const sunshineColor = getComputedStyle(document.documentElement).getPropertyValue(
-    '--color-sunshine',
-  )
+  const style = getComputedStyle(document.documentElement)
   return {
-    color: [temperatureColor, precipitationColor, sunshineColor],
+    color: [
+      style.getPropertyValue('--color-temperature'),
+      style.getPropertyValue('--color-precipitation'),
+      style.getPropertyValue('--color-sunshine'),
+    ],
     title: {
       text: 'Weather data',
     },
@@ -130,6 +126,9 @@ const options = computed(() => {
           data,
         ]),
         yAxisIndex: 0,
+        emphasis: {
+          disabled: true,
+        },
       },
       {
         id: 'Precipitation',
@@ -140,6 +139,9 @@ const options = computed(() => {
           data,
         ]),
         yAxisIndex: 1,
+        emphasis: {
+          disabled: true,
+        },
       },
       {
         id: 'Sunshine',
@@ -150,6 +152,9 @@ const options = computed(() => {
           data,
         ]),
         yAxisIndex: 2,
+        emphasis: {
+          disabled: true,
+        },
       },
     ],
   }
