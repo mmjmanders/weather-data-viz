@@ -91,9 +91,11 @@ const { data: historicalWeatherData, isLoading: isLoadingWeatherData } = useHist
 
 // Computed
 const isLocationApiSupported = computed(() => 'geolocation' in navigator)
+const isLocationApiPending = ref<boolean>(false)
 
 // Handle location API toggle
 const handleLocationApiToggle = (enabled: boolean) => {
+  isLocationApiPending.value = true
   if (!enabled) {
     latitude.value = undefined
     longitude.value = undefined
@@ -109,12 +111,14 @@ const handleLocationApiToggle = (enabled: boolean) => {
     (position) => {
       latitude.value = position.coords.latitude
       longitude.value = position.coords.longitude
+      isLocationApiPending.value = false
     },
     (error) => {
       console.error('Geolocation error:', error.message)
       setFieldValue('useLocationApi', false)
       latitude.value = undefined
       longitude.value = undefined
+      isLocationApiPending.value = false
     },
     { maximumAge: 0, timeout: 10000, enableHighAccuracy: true },
   )
@@ -242,8 +246,12 @@ watch(historicalWeatherData, (data) => {
           <template v-slot="{ canSubmit, isPristine }">
             <button
               type="submit"
-              :aria-disabled="isPristine || !canSubmit"
-              :disabled="isPristine || !canSubmit"
+              :aria-disabled="
+                isLocationApiPending || isLoadingGeolocationData || isPristine || !canSubmit
+              "
+              :disabled="
+                isLocationApiPending || isLoadingGeolocationData || isPristine || !canSubmit
+              "
               class="btn btn-primary md:ml-auto"
             >
               <font-awesome-icon

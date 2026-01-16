@@ -10,7 +10,7 @@ export const InputFormSchema = z
     useLocationApi: z.boolean().default(false),
   })
   .superRefine(({ startDate, endDate, location, useLocationApi }, ctx) => {
-    if (!useLocationApi && location?.trim()?.length === 0) {
+    if (!useLocationApi && !location?.trim()?.length) {
       ctx.addIssue({
         code: 'custom',
         path: ['location'],

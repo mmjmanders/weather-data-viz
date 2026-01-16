@@ -43,7 +43,7 @@ const options = computed(() => {
       text: 'Weather data',
     },
     grid: {
-      left: 0,
+      left: 10,
       right: 0,
     },
     legend: {
