@@ -3,6 +3,9 @@
 :root {
   --font-sans: 'Inter Variable', sans-serif;
   --font-mono: 'Geist Mono Variable', monospace;
+  --color-temperature: var(--color-coral-500);
+  --color-precipitation: var(--color-cyan-500);
+  --color-sunshine: var(--color-sunlight-500);
 }
 
 @layer base {
@@ -77,7 +80,7 @@
   }
 
   .chart {
-    @apply w-full min-h-96;
+    @apply w-full min-h-96 h-full;
   }
 }
 
