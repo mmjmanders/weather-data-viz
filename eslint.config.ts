@@ -15,7 +15,7 @@ export default defineConfigWithVueTs(
     files: ['**/*.{vue,ts,mts,tsx}'],
   },
 
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/dev-dist/**']),
 
   ...pluginVue.configs['flat/essential'],
   ...pluginQuery.configs['flat/recommended'],
@@ -25,7 +25,12 @@ export default defineConfigWithVueTs(
 
   {
     rules: {
-      'no-console': 'warn',
+      'no-console': [
+        'error',
+        {
+          allow: ['error'],
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
