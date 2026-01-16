@@ -1,6 +1,7 @@
 import { computed, type Ref } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { type HistoricalWeather, HistoricalWeatherSchema } from '@/types'
+import { upfetch } from '@/utils'
 
 const { VITE_OPENMETEO_API_URL: apiUrl } = import.meta.env
 
@@ -19,14 +20,15 @@ export const useHistoricalWeather = (
         latitude.value != undefined &&
         longitude.value != undefined,
     ),
-    queryFn: async () => {
-      const response = await fetch(
-        `${apiUrl}/archive?daily=temperature_2m_mean,sunshine_duration,precipitation_sum&start_date=${startDate.value}&end_date=${endDate.value}&latitude=${latitude.value}&longitude=${longitude.value}`,
-      )
-      if (!response.ok) {
-        throw new Error('Failed to fetch reverse geolocation')
-      }
-      const data = await response.json()
-      return HistoricalWeatherSchema.parse(data)
-    },
+    queryFn: () =>
+      upfetch(`${apiUrl}/archive`, {
+        schema: HistoricalWeatherSchema,
+        params: {
+          daily: 'temperature_2m_mean,sunshine_duration,precipitation_sum',
+          start_date: startDate.value,
+          end_date: endDate.value,
+          latitude: latitude.value,
+          longitude: longitude.value,
+        },
+      }),
   })

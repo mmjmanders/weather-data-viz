@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { up } from 'up-fetch'
 
 export const MINIMUM_DATE = '1940-01-01'
 export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD'
@@ -8,3 +9,5 @@ export const endDateBeforeStartDate = (startDate: string, endDate: string) =>
 
 export const dateRangeIsAllowed = (startDate: string, endDate: string) =>
   dayjs(endDate).diff(dayjs(startDate), 'year', true) <= 1
+
+export const upfetch = up(fetch)

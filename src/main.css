@@ -3,6 +3,9 @@
 :root {
   --font-sans: 'Inter Variable', sans-serif;
   --font-mono: 'Geist Mono Variable', monospace;
+  --color-temperature: var(--color-coral-500);
+  --color-precipitation: var(--color-cyan-500);
+  --color-sunshine: var(--color-sunlight-500);
 }
 
 @layer base {
@@ -18,6 +21,10 @@
   nav,
   main {
     @apply w-full md:w-3xl lg:w-5xl mx-auto px-4;
+  }
+
+  main {
+    @apply flex flex-col gap-8;
   }
 
   nav {
@@ -70,6 +77,10 @@
 
   h1.title {
     @apply text-2xl sm:text-3xl;
+  }
+
+  .chart {
+    @apply w-full min-h-96 h-full;
   }
 }
 

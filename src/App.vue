@@ -3,6 +3,7 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 import InputForm from '@/components/InputForm.vue'
 import type { HistoricalWeather } from '@/types'
 import { ref } from 'vue'
+import WeatherChart from '@/components/WeatherChart.vue'
 
 const { VITE_BUILD_SHA } = import.meta.env
 const version = VITE_BUILD_SHA || 'dev'
@@ -26,6 +27,7 @@ const weatherData = ref<HistoricalWeather | undefined>(undefined)
   </header>
   <main>
     <InputForm v-model="weatherData" />
+    <WeatherChart v-if="weatherData" :weatherData="weatherData" />
   </main>
   <VueQueryDevtools />
 </template>

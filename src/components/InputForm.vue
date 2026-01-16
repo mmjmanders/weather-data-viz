@@ -67,7 +67,7 @@ const locationFloat = createFloatingSetup()
 // Location API state
 const latitude = ref<number | undefined>(undefined)
 const longitude = ref<number | undefined>(undefined)
-const location = ref<string | undefined>(undefined)
+const location = ref<string | null | undefined>(undefined)
 const placeId = ref<string | null | undefined>(undefined)
 
 // Weather data state
@@ -78,14 +78,24 @@ const lon = ref<number | undefined>(undefined)
 
 // Queries
 const { data: reverseGeolocationData } = useReverseGeolocation(latitude, longitude)
-const { data: geolocationData } = useGeolocation(location, placeId)
-const { data: historicalWeatherData } = useHistoricalWeather(startDate, endDate, lat, lon)
+const { data: geolocationData, isLoading: isLoadingGeolocationData } = useGeolocation(
+  location,
+  placeId,
+)
+const { data: historicalWeatherData, isLoading: isLoadingWeatherData } = useHistoricalWeather(
+  startDate,
+  endDate,
+  lat,
+  lon,
+)
 
 // Computed
 const isLocationApiSupported = computed(() => 'geolocation' in navigator)
+const isLocationApiPending = ref<boolean>(false)
 
 // Handle location API toggle
 const handleLocationApiToggle = (enabled: boolean) => {
+  isLocationApiPending.value = true
   if (!enabled) {
     latitude.value = undefined
     longitude.value = undefined
@@ -101,12 +111,14 @@ const handleLocationApiToggle = (enabled: boolean) => {
     (position) => {
       latitude.value = position.coords.latitude
       longitude.value = position.coords.longitude
+      isLocationApiPending.value = false
     },
     (error) => {
       console.error('Geolocation error:', error.message)
       setFieldValue('useLocationApi', false)
       latitude.value = undefined
       longitude.value = undefined
+      isLocationApiPending.value = false
     },
     { maximumAge: 0, timeout: 10000, enableHighAccuracy: true },
   )
@@ -234,10 +246,19 @@ watch(historicalWeatherData, (data) => {
           <template v-slot="{ canSubmit, isPristine }">
             <button
               type="submit"
-              :aria-disabled="isPristine || !canSubmit"
-              :disabled="isPristine || !canSubmit"
+              :aria-disabled="
+                isLocationApiPending || isLoadingGeolocationData || isPristine || !canSubmit
+              "
+              :disabled="
+                isLocationApiPending || isLoadingGeolocationData || isPristine || !canSubmit
+              "
               class="btn btn-primary md:ml-auto"
             >
+              <font-awesome-icon
+                v-if="isLoadingWeatherData || isLoadingGeolocationData"
+                icon="fa-solid fa-spinner"
+                spin
+              />
               Submit
             </button>
           </template>
