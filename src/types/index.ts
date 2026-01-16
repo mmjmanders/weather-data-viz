@@ -60,7 +60,7 @@ export const HistoricalWeatherDailyUnitsSchema = z.object({
 })
 
 export const HistoricalWeatherDailySchema = z.object({
-  time: z.array(z.nullish(z.string())),
+  time: z.array(z.string()),
   temperature_2m_mean: z.array(z.nullish(z.number())),
   sunshine_duration: z.array(z.nullish(z.number())),
   precipitation_sum: z.array(z.nullish(z.number())),
@@ -72,6 +72,18 @@ export const HistoricalWeatherSchema = z
     daily: HistoricalWeatherDailySchema,
   })
   .strip()
+  .transform(({ daily, daily_units }) => ({
+    daily: {
+      ...daily,
+      temperature_2m_mean: daily.temperature_2m_mean.map((temperature) => temperature ?? 0),
+      sunshine_duration: daily.sunshine_duration.map((duration) => {
+        const seconds = duration ?? 0
+        return seconds / 3600
+      }),
+      precipitation_sum: daily.precipitation_sum.map((precipitation) => precipitation ?? 0),
+    },
+    daily_units,
+  }))
 
 export type HistoricalWeatherDailyUnits = z.infer<typeof HistoricalWeatherDailyUnitsSchema>
 export type HistoricalWeatherDaily = z.infer<typeof HistoricalWeatherDailySchema>

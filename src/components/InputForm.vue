@@ -78,8 +78,16 @@ const lon = ref<number | undefined>(undefined)
 
 // Queries
 const { data: reverseGeolocationData } = useReverseGeolocation(latitude, longitude)
-const { data: geolocationData } = useGeolocation(location, placeId)
-const { data: historicalWeatherData } = useHistoricalWeather(startDate, endDate, lat, lon)
+const { data: geolocationData, isLoading: isLoadingGeolocationData } = useGeolocation(
+  location,
+  placeId,
+)
+const { data: historicalWeatherData, isLoading: isLoadingWeatherData } = useHistoricalWeather(
+  startDate,
+  endDate,
+  lat,
+  lon,
+)
 
 // Computed
 const isLocationApiSupported = computed(() => 'geolocation' in navigator)
@@ -238,6 +246,11 @@ watch(historicalWeatherData, (data) => {
               :disabled="isPristine || !canSubmit"
               class="btn btn-primary md:ml-auto"
             >
+              <font-awesome-icon
+                v-if="isLoadingWeatherData || isLoadingGeolocationData"
+                icon="fa-solid fa-spinner"
+                spin
+              />
               Submit
             </button>
           </template>
