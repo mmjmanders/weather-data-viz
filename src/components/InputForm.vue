@@ -67,7 +67,7 @@ const locationFloat = createFloatingSetup()
 // Location API state
 const latitude = ref<number | undefined>(undefined)
 const longitude = ref<number | undefined>(undefined)
-const location = ref<string | undefined>(undefined)
+const location = ref<string | null | undefined>(undefined)
 const placeId = ref<string | null | undefined>(undefined)
 
 // Weather data state

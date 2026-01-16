@@ -5,7 +5,7 @@ import { type Geolocation, GeolocationSchema } from '@/types'
 const { VITE_LOCATIONIQ_API_URL: apiUrl, VITE_LOCATIONIQ_API_KEY: apiKey } = import.meta.env
 
 export const useGeolocation = (
-  location: Ref<string | undefined>,
+  location: Ref<string | null | undefined>,
   place: Ref<string | null | undefined>,
 ) =>
   useQuery<Geolocation | undefined, Error>({
