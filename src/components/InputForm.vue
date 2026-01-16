@@ -138,109 +138,111 @@ watch(historicalWeatherData, (data) => {
 
 <template>
   <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
-    <div class="flex flex-col md:flex-row gap-4">
-      <div class="flex-1 flex flex-col gap-1">
-        <Field name="startDate">
-          <template v-slot="{ field }">
-            <label :for="field.name">Start date</label>
-            <input
-              :id="field.name"
-              :name="field.name"
-              :value="field.state.value"
-              type="date"
-              :min="minDate"
-              :max="maxDate"
-              @input="field.handleChange(($event.target as HTMLInputElement).value)"
-              @blur="field.handleBlur"
-              class="input"
-            />
-          </template>
-        </Field>
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="flex flex-col gap-1">
+          <Field name="startDate">
+            <template v-slot="{ field }">
+              <label :for="field.name">Start date</label>
+              <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="date"
+                :min="minDate"
+                :max="maxDate"
+                @input="field.handleChange(($event.target as HTMLInputElement).value)"
+                @blur="field.handleBlur"
+                class="input"
+              />
+            </template>
+          </Field>
+        </div>
+        <div class="flex flex-col gap-1">
+          <Field name="endDate">
+            <template v-slot="{ field }">
+              <label :for="field.name">End date</label>
+              <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                ref="endDateFloat.inputRef"
+                type="date"
+                :min="minDate"
+                :max="maxDate"
+                @input="field.handleChange(($event.target as HTMLInputElement).value)"
+                @blur="field.handleBlur"
+                class="input"
+                :class="{ 'has-error': errorMap?.endDate }"
+              />
+              <div
+                ref="endDateFloat.floatingRef"
+                v-if="errorMap?.endDate"
+                class="input-error"
+                :style="endDateFloat.floatingStyles"
+              >
+                {{ errorMap.endDate }}
+              </div>
+            </template>
+          </Field>
+        </div>
+        <div class="flex flex-col gap-1">
+          <Field name="location">
+            <template v-slot="{ field }">
+              <label :for="field.name">Location</label>
+              <input
+                :id="field.name"
+                :name="field.name"
+                ref="locationFloat.inputRef"
+                :value="field.state.value"
+                @input="field.handleChange(($event.target as HTMLInputElement).value)"
+                @blur="field.handleBlur"
+                :disabled="useLocationApiValue"
+                :readonly="useLocationApiValue"
+                class="input"
+                :class="{ 'has-error': errorMap?.location }"
+              />
+              <div
+                ref="locationFloat.floatingRef"
+                v-if="errorMap?.location"
+                class="input-error"
+                :style="locationFloat.floatingStyles"
+              >
+                {{ errorMap.location }}
+              </div>
+            </template>
+          </Field>
+        </div>
       </div>
-      <div class="flex-1 flex flex-col gap-1">
-        <Field name="endDate">
-          <template v-slot="{ field }">
-            <label :for="field.name">End date</label>
-            <input
-              :id="field.name"
-              :name="field.name"
-              :value="field.state.value"
-              ref="endDateFloat.inputRef"
-              type="date"
-              :min="minDate"
-              :max="maxDate"
-              @input="field.handleChange(($event.target as HTMLInputElement).value)"
-              @blur="field.handleBlur"
-              class="input"
-              :class="{ 'has-error': errorMap?.endDate }"
-            />
-            <div
-              ref="endDateFloat.floatingRef"
-              v-if="errorMap?.endDate"
-              class="input-error"
-              :style="endDateFloat.floatingStyles"
-            >
-              {{ errorMap.endDate }}
-            </div>
-          </template>
-        </Field>
-      </div>
-      <div class="flex-1 flex flex-col gap-1">
-        <Field name="location">
-          <template v-slot="{ field }">
-            <label :for="field.name">Location</label>
-            <input
-              :id="field.name"
-              :name="field.name"
-              ref="locationFloat.inputRef"
-              :value="field.state.value"
-              @input="field.handleChange(($event.target as HTMLInputElement).value)"
-              @blur="field.handleBlur"
-              :disabled="useLocationApiValue"
-              :readonly="useLocationApiValue"
-              class="input"
-              :class="{ 'has-error': errorMap?.location }"
-            />
-            <div
-              ref="locationFloat.floatingRef"
-              v-if="errorMap?.location"
-              class="input-error"
-              :style="locationFloat.floatingStyles"
-            >
-              {{ errorMap.location }}
-            </div>
-          </template>
-        </Field>
-      </div>
-      <div class="flex-1 flex flex-col justify-end">
+      <div class="flex flex-col md:flex-row md:items-center gap-4">
         <Field name="useLocationApi">
           <template v-slot="{ field }">
-            <label :for="field.name" class="h-9 flex items-center gap-1">
+            <label :for="field.name" class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 :id="field.name"
                 :name="field.name"
                 :checked="field.state.value"
                 @change="field.handleChange(($event.target as HTMLInputElement).checked)"
-              />Use current location</label
-            >
+                class="cursor-pointer"
+              />
+              <span>Use current location</span>
+            </label>
           </template>
         </Field>
+        <Subscribe>
+          <template v-slot="{ canSubmit, isPristine }">
+            <button
+              type="submit"
+              :aria-disabled="isPristine || !canSubmit"
+              :disabled="isPristine || !canSubmit"
+              class="btn btn-primary md:ml-auto"
+            >
+              Submit
+            </button>
+          </template>
+        </Subscribe>
       </div>
-    </div>
-    <div>
-      <Subscribe>
-        <template v-slot="{ canSubmit, isPristine }">
-          <button
-            type="submit"
-            :aria-disabled="isPristine || !canSubmit"
-            :disabled="isPristine || !canSubmit"
-            class="btn btn-primary"
-          >
-            Submit
-          </button>
-        </template>
-      </Subscribe>
     </div>
   </form>
 </template>
