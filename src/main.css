@@ -20,6 +20,10 @@
     @apply w-full md:w-3xl lg:w-5xl mx-auto px-4;
   }
 
+  main {
+    @apply flex flex-col gap-8;
+  }
+
   nav {
     @apply h-full flex gap-2 items-center;
   }

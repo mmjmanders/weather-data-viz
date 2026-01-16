@@ -15,6 +15,10 @@ export const useGeolocation = (
     queryFn: () =>
       upfetch(`${apiUrl}/search`, {
         schema: GeolocationSchema,
+        parseResponse: async (response) => {
+          const data = await response.json()
+          return data.find((d: any) => d.place_id === place.value) || data[0]
+        },
         params: {
           format: 'json',
           key: apiKey,
