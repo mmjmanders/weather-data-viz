@@ -5,9 +5,17 @@ export const InputFormSchema = z
   .object({
     startDate: z.iso.date(),
     endDate: z.iso.date(),
-    location: z.string().trim().min(1, { error: 'Location must not be empty' }),
+    location: z.nullish(z.string()),
+    useLocationApi: z.boolean().default(false),
   })
-  .superRefine(({ startDate, endDate }, ctx) => {
+  .superRefine(({ startDate, endDate, location, useLocationApi }, ctx) => {
+    if (!useLocationApi && location?.trim()?.length === 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['location'],
+        message: 'Location must be entered',
+      })
+    }
     if (endDateBeforeStartDate(startDate, endDate)) {
       ctx.addIssue({
         code: 'custom',

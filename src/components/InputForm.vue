@@ -3,215 +3,246 @@ import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
 import { type HistoricalWeather, type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
-import { onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 
+// Constants
 const weatherData = defineModel<HistoricalWeather>()
 const minDate = dayjs(MINIMUM_DATE).format(DEFAULT_DATE_FORMAT)
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
+
+// Form setup
 const { Field, useStore, Subscribe, handleSubmit, setFieldValue } = useForm({
   defaultValues: {
     startDate: maxDate,
     endDate: maxDate,
-    location: '',
+    location: undefined,
+    useLocationApi: false,
   } as InputFormType,
   validators: {
     onChange: ({ value: formData }) => {
-      const errors: Record<string, string> = {}
       const result = InputFormSchema.safeParse(formData)
       if (!result.success) {
+        const errors: Record<string, string> = {}
         result.error.issues.forEach((issue) => {
           errors[String(issue.path[0])] = issue.message
         })
+        return errors
       }
-      return Object.keys(errors).length ? errors : undefined
+      return undefined
     },
   },
   onSubmit: ({ value: formData }) => {
-    location.value = formData.location
     startDate.value = formData.startDate
     endDate.value = formData.endDate
-    emit('submit:data', formData.startDate, formData.endDate, formData.location)
+
+    if (formData.useLocationApi) {
+      lat.value = latitude.value
+      lon.value = longitude.value
+    } else if (formData.location) {
+      location.value = formData.location
+    }
   },
 })
 
-const emit = defineEmits<{
-  'submit:data': [startDate: string, endDate: string, location: string]
-}>()
-
 const errorMap = useStore((state) => state.errorMap.onChange)
+const useLocationApiValue = useStore<boolean>((state) => state.values.useLocationApi)
 
-const endDateInputRef = ref(null)
-const endDateFloating = ref(null)
-const { floatingStyles: endDateFloatingStyles } = useFloating(endDateInputRef, endDateFloating, {
-  placement: 'bottom-end',
-  middleware: [offset(5)],
-  whileElementsMounted: autoUpdate,
-})
+// Floating UI setup for error messages
+const createFloatingSetup = () => {
+  const inputRef = ref(null)
+  const floatingRef = ref(null)
+  const { floatingStyles } = useFloating(inputRef, floatingRef, {
+    placement: 'bottom-end',
+    middleware: [offset(5)],
+    whileElementsMounted: autoUpdate,
+  })
+  return { inputRef, floatingRef, floatingStyles }
+}
 
-const locationInputRef = ref(null)
-const locationFloating = ref(null)
-const { floatingStyles: locationFloatingStyles } = useFloating(locationInputRef, locationFloating, {
-  placement: 'bottom-end',
-  middleware: [offset(5)],
-  whileElementsMounted: autoUpdate,
-})
+const endDateFloat = createFloatingSetup()
+const locationFloat = createFloatingSetup()
 
+// Location API state
 const latitude = ref<number | undefined>(undefined)
 const longitude = ref<number | undefined>(undefined)
-const isUsingGeolocation = ref<boolean>(false)
-const { data: reverseGeolocationData } = useReverseGeolocation(latitude, longitude)
-
 const location = ref<string | undefined>(undefined)
 const placeId = ref<string | null | undefined>(undefined)
-const { data: geolocationData } = useGeolocation(location, placeId)
 
+// Weather data state
 const startDate = ref<string | undefined>(undefined)
 const endDate = ref<string | undefined>(undefined)
 const lat = ref<number | undefined>(undefined)
 const lon = ref<number | undefined>(undefined)
-const { data: historicalWeaterData } = useHistoricalWeather(startDate, endDate, lat, lon)
 
-watch(
-  () => reverseGeolocationData.value,
-  (data) => {
-    if (data) {
-      setFieldValue('location', data.display_name)
-      placeId.value = data.place_id
-    }
-  },
-  { immediate: true },
-)
+// Queries
+const { data: reverseGeolocationData } = useReverseGeolocation(latitude, longitude)
+const { data: geolocationData } = useGeolocation(location, placeId)
+const { data: historicalWeatherData } = useHistoricalWeather(startDate, endDate, lat, lon)
 
-watch(
-  () => geolocationData.value,
-  (data) => {
-    if (data) {
-      lat.value = data.lat
-      lon.value = data.lon
-    }
-  },
-)
+// Computed
+const isLocationApiSupported = computed(() => 'geolocation' in navigator)
 
-watch(
-  () => historicalWeaterData.value,
-  (data) => {
-    if (data) {
-      weatherData.value = data
-    }
-  },
-)
+// Handle location API toggle
+const handleLocationApiToggle = (enabled: boolean) => {
+  if (!enabled) {
+    latitude.value = undefined
+    longitude.value = undefined
+    return
+  }
 
-onMounted(() => {
-  if (navigator.geolocation) {
-    isUsingGeolocation.value = true
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        latitude.value = position.coords.latitude
-        longitude.value = position.coords.longitude
-        isUsingGeolocation.value = false
-      },
-      () => {
-        isUsingGeolocation.value = false
-      },
-    )
+  if (!isLocationApiSupported.value) {
+    setFieldValue('useLocationApi', false)
+    return
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      latitude.value = position.coords.latitude
+      longitude.value = position.coords.longitude
+    },
+    (error) => {
+      console.error('Geolocation error:', error.message)
+      setFieldValue('useLocationApi', false)
+      latitude.value = undefined
+      longitude.value = undefined
+    },
+    { maximumAge: 0, timeout: 10000, enableHighAccuracy: true },
+  )
+}
+
+// Watchers
+watch(useLocationApiValue, handleLocationApiToggle)
+
+watch(reverseGeolocationData, (data) => {
+  if (data) {
+    setFieldValue('location', data.display_name)
+    placeId.value = data.place_id
+  }
+})
+
+watch(geolocationData, (data) => {
+  if (data) {
+    lat.value = data.lat
+    lon.value = data.lon
+  }
+})
+
+watch(historicalWeatherData, (data) => {
+  if (data) {
+    weatherData.value = data
   }
 })
 </script>
 
 <template>
   <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
-    <div class="flex flex-col md:flex-row gap-4">
-      <div class="flex-1 flex flex-col gap-1">
-        <Field name="startDate">
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="flex flex-col gap-1">
+          <Field name="startDate">
+            <template v-slot="{ field }">
+              <label :for="field.name">Start date</label>
+              <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="date"
+                :min="minDate"
+                :max="maxDate"
+                @input="field.handleChange(($event.target as HTMLInputElement).value)"
+                @blur="field.handleBlur"
+                class="input"
+              />
+            </template>
+          </Field>
+        </div>
+        <div class="flex flex-col gap-1">
+          <Field name="endDate">
+            <template v-slot="{ field }">
+              <label :for="field.name">End date</label>
+              <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                ref="endDateFloat.inputRef"
+                type="date"
+                :min="minDate"
+                :max="maxDate"
+                @input="field.handleChange(($event.target as HTMLInputElement).value)"
+                @blur="field.handleBlur"
+                class="input"
+                :class="{ 'has-error': errorMap?.endDate }"
+              />
+              <div
+                ref="endDateFloat.floatingRef"
+                v-if="errorMap?.endDate"
+                class="input-error"
+                :style="endDateFloat.floatingStyles"
+              >
+                {{ errorMap.endDate }}
+              </div>
+            </template>
+          </Field>
+        </div>
+        <div class="flex flex-col gap-1">
+          <Field name="location">
+            <template v-slot="{ field }">
+              <label :for="field.name">Location</label>
+              <input
+                :id="field.name"
+                :name="field.name"
+                ref="locationFloat.inputRef"
+                :value="field.state.value"
+                @input="field.handleChange(($event.target as HTMLInputElement).value)"
+                @blur="field.handleBlur"
+                :disabled="useLocationApiValue"
+                :readonly="useLocationApiValue"
+                class="input"
+                :class="{ 'has-error': errorMap?.location }"
+              />
+              <div
+                ref="locationFloat.floatingRef"
+                v-if="errorMap?.location"
+                class="input-error"
+                :style="locationFloat.floatingStyles"
+              >
+                {{ errorMap.location }}
+              </div>
+            </template>
+          </Field>
+        </div>
+      </div>
+      <div class="flex flex-col md:flex-row md:items-center gap-4">
+        <Field name="useLocationApi">
           <template v-slot="{ field }">
-            <label :for="field.name">Start date</label>
-            <input
-              :id="field.name"
-              :name="field.name"
-              :value="field.state.value"
-              type="date"
-              :min="minDate"
-              :max="maxDate"
-              @input="field.handleChange(($event.target as HTMLInputElement).value)"
-              @blur="field.handleBlur"
-              class="input"
-            />
+            <label :for="field.name" class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                :id="field.name"
+                :name="field.name"
+                :checked="field.state.value"
+                @change="field.handleChange(($event.target as HTMLInputElement).checked)"
+                class="cursor-pointer"
+              />
+              <span>Use current location</span>
+            </label>
           </template>
         </Field>
-      </div>
-      <div class="flex-1 flex flex-col gap-1">
-        <Field name="endDate">
-          <template v-slot="{ field }">
-            <label :for="field.name">End date</label>
-            <input
-              :id="field.name"
-              :name="field.name"
-              :value="field.state.value"
-              ref="endDateInputRef"
-              type="date"
-              :min="minDate"
-              :max="maxDate"
-              @input="field.handleChange(($event.target as HTMLInputElement).value)"
-              @blur="field.handleBlur"
-              class="input"
-              :class="{
-                'has-error': errorMap?.endDate,
-              }"
-            />
-            <div
-              ref="endDateFloating"
-              v-if="errorMap?.endDate"
-              class="input-error"
-              :style="endDateFloatingStyles"
+        <Subscribe>
+          <template v-slot="{ canSubmit, isPristine }">
+            <button
+              type="submit"
+              :aria-disabled="isPristine || !canSubmit"
+              :disabled="isPristine || !canSubmit"
+              class="btn btn-primary md:ml-auto"
             >
-              {{ errorMap.endDate }}
-            </div>
+              Submit
+            </button>
           </template>
-        </Field>
+        </Subscribe>
       </div>
-      <div class="flex-1 flex flex-col gap-1">
-        <Field name="location">
-          <template v-slot="{ field }">
-            <label :for="field.name">Location</label>
-            <input
-              :id="field.name"
-              :name="field.name"
-              ref="locationInputRef"
-              :value="field.state.value"
-              @input="field.handleChange(($event.target as HTMLInputElement).value)"
-              @blur="field.handleBlur"
-              class="input"
-              :class="{
-                'has-error': errorMap?.location,
-              }"
-            />
-            <div
-              ref="locationFloating"
-              v-if="errorMap?.location"
-              class="input-error"
-              :style="locationFloatingStyles"
-            >
-              {{ errorMap.location }}
-            </div>
-          </template>
-        </Field>
-      </div>
-    </div>
-    <div>
-      <Subscribe>
-        <template v-slot="{ canSubmit, isPristine }">
-          <button
-            type="submit"
-            :aria-disabled="isUsingGeolocation || isPristine || !canSubmit"
-            :disabled="isUsingGeolocation || isPristine || !canSubmit"
-            class="btn btn-primary"
-          >
-            Submit
-          </button>
-        </template>
-      </Subscribe>
     </div>
   </form>
 </template>
