@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { HistoricalWeather } from '@/types'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import dayjs from 'dayjs'
 import {
   Chart as ChartJS,
@@ -38,6 +38,8 @@ const style = window.getComputedStyle(document.documentElement)
 const temperatureColor = style.getPropertyValue('--color-temperature')
 const precipitationColor = style.getPropertyValue('--color-precipitation')
 const sunshineColor = style.getPropertyValue('--color-sunshine')
+const textColor = style.getPropertyValue('--color-primary')
+const backgroundColor = style.getPropertyValue('--color-background')
 
 const data = computed(() => {
   const { daily } = props.weatherData
@@ -78,6 +80,8 @@ const options = computed(() => ({
   scales: {
     x: {
       grid: { display: false },
+      border: { color: textColor },
+      ticks: { color: textColor },
     },
     yTemperature: {
       type: 'linear' as const,
@@ -85,7 +89,14 @@ const options = computed(() => ({
       title: {
         display: true,
         text: 'Temperature (°C)',
+        color: textColor,
       },
+      grid: {
+        color: textColor,
+        tickColor: textColor,
+      },
+      border: { color: textColor },
+      ticks: { color: textColor },
     },
     yPrecipitation: {
       type: 'linear' as const,
@@ -93,10 +104,14 @@ const options = computed(() => ({
       title: {
         display: true,
         text: 'Precipitation (mm)',
+        color: textColor,
       },
       grid: {
         drawOnChartArea: false,
+        tickColor: textColor,
       },
+      border: { color: textColor },
+      ticks: { color: textColor },
     },
     ySunshine: {
       type: 'linear' as const,
@@ -104,16 +119,29 @@ const options = computed(() => ({
       title: {
         display: true,
         text: 'Sunshine (h)',
+        color: textColor,
       },
       grid: {
         drawOnChartArea: false,
+        tickColor: textColor,
       },
+      border: { color: textColor },
+      ticks: { color: textColor },
     },
   },
   plugins: {
+    legend: {
+      labels: {
+        color: textColor,
+      },
+    },
     tooltip: {
       mode: 'index' as const,
       intersect: false,
+      backgroundColor: textColor,
+      titleColor: backgroundColor,
+      bodyColor: backgroundColor,
+      borderColor: backgroundColor,
     },
   },
 }))
