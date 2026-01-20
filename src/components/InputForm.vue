@@ -99,11 +99,13 @@ const handleLocationApiToggle = (enabled: boolean) => {
   if (!enabled) {
     latitude.value = undefined
     longitude.value = undefined
+    isLocationApiPending.value = false
     return
   }
 
   if (!isLocationApiSupported.value) {
     setFieldValue('useLocationApi', false)
+    isLocationApiPending.value = false
     return
   }
 
