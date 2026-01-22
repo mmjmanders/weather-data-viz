@@ -95,20 +95,18 @@ const isLocationApiPending = ref<boolean>(false)
 
 // Handle location API toggle
 const handleLocationApiToggle = (enabled: boolean) => {
-  isLocationApiPending.value = true
   if (!enabled) {
     latitude.value = undefined
     longitude.value = undefined
-    isLocationApiPending.value = false
     return
   }
 
   if (!isLocationApiSupported.value) {
     setFieldValue('useLocationApi', false)
-    isLocationApiPending.value = false
     return
   }
 
+  isLocationApiPending.value = true
   navigator.geolocation.getCurrentPosition(
     (position) => {
       latitude.value = position.coords.latitude
