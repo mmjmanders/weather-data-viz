@@ -3,9 +3,10 @@ import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
 import { type HistoricalWeather, type InputForm as InputFormType, InputFormSchema } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
+import { parseQuery } from 'vue-router'
 
 // Constants
 const weatherData = defineModel<HistoricalWeather>()
@@ -95,20 +96,18 @@ const isLocationApiPending = ref<boolean>(false)
 
 // Handle location API toggle
 const handleLocationApiToggle = (enabled: boolean) => {
-  isLocationApiPending.value = true
   if (!enabled) {
     latitude.value = undefined
     longitude.value = undefined
-    isLocationApiPending.value = false
     return
   }
 
   if (!isLocationApiSupported.value) {
     setFieldValue('useLocationApi', false)
-    isLocationApiPending.value = false
     return
   }
 
+  isLocationApiPending.value = true
   navigator.geolocation.getCurrentPosition(
     (position) => {
       latitude.value = position.coords.latitude
@@ -147,6 +146,19 @@ watch(historicalWeatherData, (data) => {
   if (data) {
     weatherData.value = data
   }
+})
+
+onMounted(() => {
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/
+  const { location, startDate, endDate } = parseQuery(window.location.search) as Record<
+    string,
+    string | null
+  >
+  if (location) setFieldValue('location', location)
+  if (startDate && (datePattern.test(startDate) || dayjs(startDate).isValid()))
+    setFieldValue('startDate', dayjs(startDate).format(DEFAULT_DATE_FORMAT))
+  if (endDate && (datePattern.test(endDate) || dayjs(endDate).isValid()))
+    setFieldValue('endDate', dayjs(endDate).format(DEFAULT_DATE_FORMAT))
 })
 </script>
 
