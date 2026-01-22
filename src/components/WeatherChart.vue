@@ -66,7 +66,7 @@ const data = computed(() => {
       {
         type: 'bar' as const,
         label: 'Sunshine (h)',
-        data: [...daily.sunshine_duration],
+        data: [...daily.sunshine_duration.map((s) => s.toFixed(1))],
         backgroundColor: sunshineColor,
         yAxisID: 'ySunshine',
       },
