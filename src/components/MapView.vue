@@ -19,6 +19,10 @@ const icon = L.icon({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
   shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
 })
 
 const updateMap = (data?: Coordinates) => {
@@ -41,6 +45,8 @@ const updateMap = (data?: Coordinates) => {
   marker.value = L.marker([coordinates.latitude, coordinates.longitude], {
     icon,
   }).addTo(map.value as L.Map)
+
+  map.value.invalidateSize()
 }
 
 watch(
