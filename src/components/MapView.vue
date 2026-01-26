@@ -3,6 +3,10 @@ import type { Coordinates } from '@/types'
 import { onMounted, ref, watch } from 'vue'
 import L from 'leaflet'
 
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+
 const props = defineProps<{
   coordinates: Coordinates
 }>()
@@ -10,6 +14,12 @@ const props = defineProps<{
 const mapEl = ref<HTMLElement | null>(null)
 const map = ref<L.Map | undefined>(undefined)
 const marker = ref<L.Marker | undefined>(undefined)
+
+const icon = L.icon({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+})
 
 const updateMap = (data?: Coordinates) => {
   if (!mapEl.value) return
@@ -28,7 +38,9 @@ const updateMap = (data?: Coordinates) => {
 
   const coordinates = data ?? props.coordinates
   map.value.setView([coordinates.latitude, coordinates.longitude], 13)
-  marker.value = L.marker([coordinates.latitude, coordinates.longitude]).addTo(map.value as L.Map)
+  marker.value = L.marker([coordinates.latitude, coordinates.longitude], {
+    icon,
+  }).addTo(map.value as L.Map)
 }
 
 watch(
