@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
 
 :root {
   --font-sans: 'Inter Variable', sans-serif;

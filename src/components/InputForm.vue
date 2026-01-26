@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
-import { type HistoricalWeather, type InputForm as InputFormType, InputFormSchema } from '@/types'
+import {
+  type HistoricalWeather,
+  type InputForm as InputFormType,
+  InputFormSchema,
+  type Coordinates,
+  CoordinatesSchema,
+} from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -8,8 +14,11 @@ import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 import { parseQuery } from 'vue-router'
 
+// Models
+const weatherData = defineModel<HistoricalWeather | undefined>('weatherData')
+const coordinates = defineModel<Coordinates | undefined>('coordinates')
+
 // Constants
-const weatherData = defineModel<HistoricalWeather | undefined>()
 const minDate = dayjs(MINIMUM_DATE).format(DEFAULT_DATE_FORMAT)
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 
@@ -148,11 +157,20 @@ watch(historicalWeatherData, (data) => {
   }
 })
 
+watch([lat, lon, latitude, longitude], (data) => {
+  if (data.some((value) => value !== undefined)) {
+    coordinates.value = CoordinatesSchema.parse({
+      latitude: latitude.value ?? lat.value,
+      longitude: longitude.value ?? lon.value,
+    })
+  }
+})
+
 onMounted(() => {
   const datePattern = /^\d{4}-\d{2}-\d{2}$/
   const { location, startDate, endDate } = parseQuery(window.location.search) as Record<
     string,
-    string | null
+    string | undefined
   >
   if (location) setFieldValue('location', location)
   if (startDate && (datePattern.test(startDate) || dayjs(startDate).isValid()))

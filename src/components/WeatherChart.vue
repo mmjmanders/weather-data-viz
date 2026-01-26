@@ -148,7 +148,7 @@ const options = computed(() => ({
 </script>
 
 <template>
-  <div class="h-full w-full">
+  <div class="min-h-96 w-full">
     <Chart type="bar" :data="data" :options="options" />
   </div>
 </template>

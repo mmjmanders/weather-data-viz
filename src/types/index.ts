@@ -89,3 +89,12 @@ export const HistoricalWeatherSchema = z
 export type HistoricalWeatherDailyUnits = z.infer<typeof HistoricalWeatherDailyUnitsSchema>
 export type HistoricalWeatherDaily = z.infer<typeof HistoricalWeatherDailySchema>
 export type HistoricalWeather = z.infer<typeof HistoricalWeatherSchema>
+
+export const CoordinatesSchema = z
+  .object({
+    latitude: z.number(),
+    longitude: z.number(),
+  })
+  .strip()
+
+export type Coordinates = z.infer<typeof CoordinatesSchema>
