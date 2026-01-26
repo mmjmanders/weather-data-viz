@@ -64,8 +64,12 @@ export default defineConfig(({ command }) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('chart')) return 'chart-deps'
-            if (id.includes('vue')) return 'vue-deps'
+            if (id.includes('chart')) return 'chart'
+            if (id.includes('leaflet')) return 'leaflet'
+            if (id.includes('tanstack')) return 'tanstack'
+            if (id.includes('fortawesome')) return 'fortawesome'
+            if (id.includes('fontsource')) return 'fontsource'
+            if (id.includes('vue')) return 'vue'
             return 'vendor'
           }
         },
