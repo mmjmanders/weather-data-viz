@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
 
 :root {
   --font-sans: 'Inter Variable', sans-serif;
@@ -70,7 +71,7 @@
   }
 
   .input-error {
-    @apply text-coral-400 text-xs;
+    @apply text-coral-400 text-xs absolute z-10 -bottom-5;
   }
 
   .input {

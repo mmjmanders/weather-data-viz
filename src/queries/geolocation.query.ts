@@ -17,7 +17,9 @@ export const useGeolocation = (
         schema: GeolocationSchema,
         parseResponse: async (response) => {
           const data = await response.json()
-          return data.find((d: any) => d.place_id === place.value) || data[0]
+          return (
+            data.find((d: { place_id: string } & unknown) => d.place_id === place.value) || data[0]
+          )
         },
         params: {
           format: 'json',
