@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const mapEl = ref<HTMLElement | null>(null)
 const map = ref<L.Map | undefined>(undefined)
+const marker = ref<L.Marker | undefined>(undefined)
 
 const updateMap = (data?: Coordinates) => {
   if (!mapEl.value) return
@@ -21,9 +22,13 @@ const updateMap = (data?: Coordinates) => {
     }).addTo(map.value as L.Map)
   }
 
+  if (marker.value) {
+    map.value.removeLayer(marker.value as L.Marker)
+  }
+
   const coordinates = data ?? props.coordinates
   map.value.setView([coordinates.latitude, coordinates.longitude], 13)
-  L.marker([coordinates.latitude, coordinates.longitude]).addTo(map.value as L.Map)
+  marker.value = L.marker([coordinates.latitude, coordinates.longitude]).addTo(map.value as L.Map)
 }
 
 watch(
