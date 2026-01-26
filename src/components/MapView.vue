@@ -44,7 +44,7 @@ onMounted(updateMap)
 </script>
 
 <template>
-  <div class="h-96 w-full" ref="mapEl" />
+  <div class="h-48 sm:h-72 md:h-96 w-full" ref="mapEl" />
 </template>
 
 <style scoped></style>
