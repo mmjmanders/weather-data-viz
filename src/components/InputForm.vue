@@ -9,7 +9,7 @@ import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/q
 import { parseQuery } from 'vue-router'
 
 // Constants
-const weatherData = defineModel<HistoricalWeather>()
+const weatherData = defineModel<HistoricalWeather | undefined>()
 const minDate = dayjs(MINIMUM_DATE).format(DEFAULT_DATE_FORMAT)
 const maxDate = dayjs().subtract(1, 'day').format(DEFAULT_DATE_FORMAT)
 
@@ -184,7 +184,7 @@ onMounted(() => {
             </template>
           </Field>
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 relative">
           <Field name="endDate">
             <template v-slot="{ field }">
               <label :for="field.name">End date</label>
@@ -212,7 +212,7 @@ onMounted(() => {
             </template>
           </Field>
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 relative">
           <Field name="location">
             <template v-slot="{ field }">
               <label :for="field.name">Location</label>

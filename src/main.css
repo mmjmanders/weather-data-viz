@@ -70,7 +70,7 @@
   }
 
   .input-error {
-    @apply text-coral-400 text-xs;
+    @apply text-coral-400 text-xs absolute z-10 -bottom-5;
   }
 
   .input {
