@@ -10,30 +10,32 @@ const props = defineProps<{
 const mapEl = ref<HTMLElement | null>(null)
 const map = ref<L.Map | undefined>(undefined)
 
-const initMap = () => {
-  if (!mapEl.value || map.value) return
+const updateMap = (data?: Coordinates) => {
+  if (!mapEl.value) return
 
-  map.value = L.map(mapEl.value).setView(
-    [props.coordinates.latitude, props.coordinates.longitude],
-    13,
-  )
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map.value as L.Map)
+  if (!map.value) {
+    map.value = L.map(mapEl.value)
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map.value as L.Map)
+  }
+
+  const coordinates = data ?? props.coordinates
+  map.value.setView([coordinates.latitude, coordinates.longitude], 13)
+  L.marker([coordinates.latitude, coordinates.longitude]).addTo(map.value as L.Map)
 }
 
 watch(
   () => props.coordinates,
   (data) => {
     if (!data) return
-    if (map.value) map.value.setView([data.latitude, data.longitude], 13)
-    else initMap()
+    else updateMap(data)
   },
   { deep: true },
 )
 
-onMounted(initMap)
+onMounted(updateMap)
 </script>
 
 <template>
