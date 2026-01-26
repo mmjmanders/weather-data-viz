@@ -1,6 +1,11 @@
 blockExoticSubdeps: true
+
 minimumReleaseAge: 1440
+
 onlyBuiltDependencies:
   - esbuild
   - sharp
   - vue-demi
+
+overrides:
+  lodash@>=4.0.0 <=4.17.22: '>=4.17.23'
