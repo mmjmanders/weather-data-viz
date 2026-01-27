@@ -268,9 +268,12 @@ onMounted(() => {
               class="btn"
               :class="field.state.value ? 'btn-checked' : 'btn-primary'"
             >
-              <font-awesome-icon
-                :icon="['fas', field.state.value ? 'check' : 'location-crosshairs']"
-              />
+              <Transition name="fade" mode="out-in">
+                <font-awesome-icon
+                  :key="field.state.value ? 'check' : 'location-crosshairs'"
+                  :icon="['fas', field.state.value ? 'check' : 'location-crosshairs']"
+                />
+              </Transition>
               Use current location
             </button>
           </template>
@@ -301,4 +304,14 @@ onMounted(() => {
   </form>
 </template>
 
-<style scoped></style>
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 75ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
