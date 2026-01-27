@@ -13,6 +13,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 import { parseQuery } from 'vue-router'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Models
 const weatherData = defineModel<HistoricalWeather | undefined>('weatherData')
@@ -261,17 +262,20 @@ onMounted(() => {
       <div class="flex flex-col md:flex-row md:items-center gap-4">
         <Field name="useLocationApi">
           <template v-slot="{ field }">
-            <label :for="field.name" class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                :id="field.name"
-                :name="field.name"
-                :checked="field.state.value"
-                @change="field.handleChange(($event.target as HTMLInputElement).checked)"
-                class="cursor-pointer"
-              />
-              <span>Use current location</span>
-            </label>
+            <button
+              type="button"
+              @click="field.handleChange(!field.state.value)"
+              class="btn"
+              :class="field.state.value ? 'btn-checked' : 'btn-primary'"
+            >
+              <Transition name="fade" mode="out-in">
+                <font-awesome-icon
+                  :key="field.state.value ? 'check' : 'location-crosshairs'"
+                  :icon="['fas', field.state.value ? 'check' : 'location-crosshairs']"
+                />
+              </Transition>
+              Use current location
+            </button>
           </template>
         </Field>
         <Subscribe>
@@ -288,7 +292,7 @@ onMounted(() => {
             >
               <font-awesome-icon
                 v-if="isLoadingWeatherData || isLoadingGeolocationData"
-                icon="fa-solid fa-spinner"
+                :icon="['fas', 'spinner']"
                 spin
               />
               Submit
@@ -300,4 +304,14 @@ onMounted(() => {
   </form>
 </template>
 
-<style scoped></style>
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 75ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
