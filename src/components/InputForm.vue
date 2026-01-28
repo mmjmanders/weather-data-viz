@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
 import {
+  type Coordinates,
+  CoordinatesSchema,
   type HistoricalWeather,
   type InputForm as InputFormType,
   InputFormSchema,
-  type Coordinates,
-  CoordinatesSchema,
 } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { computed, onMounted, ref, watch } from 'vue'
-import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
+import { autoUpdate, shift, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 import { parseQuery } from 'vue-router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -65,8 +65,7 @@ const createFloatingSetup = () => {
   const inputRef = ref(null)
   const floatingRef = ref(null)
   const { floatingStyles } = useFloating(inputRef, floatingRef, {
-    placement: 'bottom-end',
-    middleware: [offset(5)],
+    middleware: [shift()],
     whileElementsMounted: autoUpdate,
   })
   return { inputRef, floatingRef, floatingStyles }

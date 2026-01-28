@@ -75,7 +75,7 @@
   }
 
   .input-error {
-    @apply text-coral-400 text-xs absolute z-10 -bottom-5;
+    @apply text-slate-50 text-xs absolute rounded-md bg-coral-400 px-2 py-1;
   }
 
   .input {
