@@ -67,7 +67,7 @@
   }
 
   .btn-checked {
-    @apply bg-leaf-400;
+    @apply bg-leaf-400 text-slate-950 dark:text-slate-950;
   }
 
   .btn:disabled {

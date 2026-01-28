@@ -249,7 +249,7 @@ onMounted(() => {
               />
               <div
                 ref="locationFloat.floatingRef"
-                v-if="errorMap?.location"
+                v-if="errorMap?.location && !field.state.meta.isPristine"
                 class="input-error"
                 :style="locationFloat.floatingStyles"
               >
