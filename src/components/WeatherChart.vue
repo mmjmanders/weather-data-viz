@@ -19,12 +19,12 @@ const data = computed(() => {
   const { daily } = props.weatherData
 
   return {
-    labels: [...daily.time.map((date) => dayjs(date).format('MMM D'))],
+    labels: daily.time.map((date) => dayjs(date).format('MMM D')),
     datasets: [
       {
         type: 'line' as const,
         label: 'Temperature (°C)',
-        data: [...daily.temperature_2m_mean],
+        data: daily.temperature_2m_mean,
         borderColor: temperatureColor,
         backgroundColor: temperatureColor,
         yAxisID: 'yTemperature',
@@ -33,14 +33,14 @@ const data = computed(() => {
       {
         type: 'bar' as const,
         label: 'Precipitation (mm)',
-        data: [...daily.precipitation_sum],
+        data: daily.precipitation_sum,
         backgroundColor: precipitationColor,
         yAxisID: 'yPrecipitation',
       },
       {
         type: 'bar' as const,
         label: 'Sunshine (h)',
-        data: [...daily.sunshine_duration.map((s) => Number(s.toFixed(1)))],
+        data: daily.sunshine_duration.map((s) => Number(s.toFixed(1))),
         backgroundColor: sunshineColor,
         yAxisID: 'ySunshine',
       },
@@ -123,7 +123,7 @@ const options = computed(() => ({
 
 <template>
   <div class="h-48 sm:h-96 w-full">
-    <Chart type="bar" :data="data" :options="options" />
+    <Chart type="bar" :data="JSON.parse(JSON.stringify(data))" :options="options" />
   </div>
 </template>
 
