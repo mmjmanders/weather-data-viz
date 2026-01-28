@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { DEFAULT_DATE_FORMAT, MINIMUM_DATE } from '@/utils'
 import {
+  type Coordinates,
+  CoordinatesSchema,
   type HistoricalWeather,
   type InputForm as InputFormType,
   InputFormSchema,
-  type Coordinates,
-  CoordinatesSchema,
 } from '@/types'
 import dayjs from 'dayjs'
 import { useForm } from '@tanstack/vue-form'
 import { computed, onMounted, ref, watch } from 'vue'
-import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
+import { autoUpdate, shift, useFloating } from '@floating-ui/vue'
 import { useGeolocation, useHistoricalWeather, useReverseGeolocation } from '@/queries'
 import { parseQuery } from 'vue-router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -64,12 +64,12 @@ const useLocationApiValue = useStore<boolean>((state) => state.values.useLocatio
 const createFloatingSetup = () => {
   const inputRef = ref(null)
   const floatingRef = ref(null)
-  const { floatingStyles } = useFloating(inputRef, floatingRef, {
-    placement: 'bottom-end',
-    middleware: [offset(5)],
+  const { floatingStyles, middlewareData } = useFloating(inputRef, floatingRef, {
+    placement: 'top',
+    middleware: [shift()],
     whileElementsMounted: autoUpdate,
   })
-  return { inputRef, floatingRef, floatingStyles }
+  return { inputRef, floatingRef, floatingStyles, middlewareData }
 }
 
 const endDateFloat = createFloatingSetup()
@@ -227,6 +227,7 @@ onMounted(() => {
                 :style="endDateFloat.floatingStyles"
               >
                 {{ errorMap.endDate }}
+                <div class="input-error-arrow"></div>
               </div>
             </template>
           </Field>
@@ -249,11 +250,12 @@ onMounted(() => {
               />
               <div
                 ref="locationFloat.floatingRef"
-                v-if="errorMap?.location"
+                v-if="errorMap?.location && !field.state.meta.isPristine"
                 class="input-error"
                 :style="locationFloat.floatingStyles"
               >
                 {{ errorMap.location }}
+                <div class="input-error-arrow"></div>
               </div>
             </template>
           </Field>

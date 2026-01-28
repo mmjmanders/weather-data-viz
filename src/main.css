@@ -67,7 +67,7 @@
   }
 
   .btn-checked {
-    @apply bg-leaf-400;
+    @apply bg-leaf-400 text-slate-950 dark:text-slate-950;
   }
 
   .btn:disabled {
@@ -75,7 +75,11 @@
   }
 
   .input-error {
-    @apply text-coral-400 text-xs absolute z-10 -bottom-5;
+    @apply text-slate-50 text-xs absolute rounded-md bg-coral-400 px-2 py-1;
+  }
+
+  .input-error-arrow {
+    @apply absolute bg-coral-400 w-2 h-2 rotate-45 -z-10 -bottom-0.5 -ms-1 left-1/2;
   }
 
   .input {

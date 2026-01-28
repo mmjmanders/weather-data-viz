@@ -2,33 +2,7 @@
 import type { HistoricalWeather } from '@/types'
 import { computed } from 'vue'
 import dayjs from 'dayjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  LineController,
-  BarController,
-} from 'chart.js'
 import { Chart } from 'vue-chartjs'
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  LineController,
-  BarController,
-)
 
 const props = defineProps<{
   weatherData: HistoricalWeather
