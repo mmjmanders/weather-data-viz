@@ -78,6 +78,13 @@
     @apply text-slate-50 text-xs absolute rounded-md bg-coral-400 px-2 py-1;
   }
 
+  .input-error-arrow {
+    @apply absolute bg-coral-400 w-2 h-2 rotate-45 -z-10;
+    bottom: -4px;
+    left: 50%;
+    margin-left: -4px;
+  }
+
   .input {
     @apply appearance-none h-9 bg-slate-50 text-slate-950 px-2 py-1 rounded-md border focus:outline-none border-slate-500 disabled:cursor-not-allowed disabled:bg-slate-200;
   }

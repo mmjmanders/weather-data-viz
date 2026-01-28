@@ -64,11 +64,12 @@ const useLocationApiValue = useStore<boolean>((state) => state.values.useLocatio
 const createFloatingSetup = () => {
   const inputRef = ref(null)
   const floatingRef = ref(null)
-  const { floatingStyles } = useFloating(inputRef, floatingRef, {
+  const { floatingStyles, middlewareData } = useFloating(inputRef, floatingRef, {
+    placement: 'top',
     middleware: [shift()],
     whileElementsMounted: autoUpdate,
   })
-  return { inputRef, floatingRef, floatingStyles }
+  return { inputRef, floatingRef, floatingStyles, middlewareData }
 }
 
 const endDateFloat = createFloatingSetup()
@@ -226,6 +227,7 @@ onMounted(() => {
                 :style="endDateFloat.floatingStyles"
               >
                 {{ errorMap.endDate }}
+                <div class="input-error-arrow"></div>
               </div>
             </template>
           </Field>
@@ -253,6 +255,7 @@ onMounted(() => {
                 :style="locationFloat.floatingStyles"
               >
                 {{ errorMap.location }}
+                <div class="input-error-arrow"></div>
               </div>
             </template>
           </Field>
