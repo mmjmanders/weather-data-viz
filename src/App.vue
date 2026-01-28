@@ -30,7 +30,9 @@ const coordinates = ref<Coordinates | undefined>(undefined)
   <main>
     <InputForm v-model:weatherData="weatherData" v-model:coordinates="coordinates" />
     <MapView v-if="coordinates" :coordinates="coordinates" />
-    <WeatherChart v-if="weatherData" :weatherData="weatherData" />
+    <WeatherChart v-if="weatherData" :weatherData="weatherData"
+      >Unable to render chart</WeatherChart
+    >
   </main>
   <VueQueryDevtools />
 </template>
